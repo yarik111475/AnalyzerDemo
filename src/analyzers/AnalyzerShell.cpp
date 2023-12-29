@@ -1,10 +1,10 @@
-#include "AnalyzerExecutor.h"
+#include "AnalyzerShell.h"
 #include "analyzers/IAnalyzer.h"
 
 #include <QDebug>
 #include <QLibrary>
 
-void AnalyzerExecutor::run()
+void AnalyzerShell::run()
 {
     try{
         makeTypeFunc typeMaker {(makeTypeFunc)libPtr_->resolve(qPrintable(typeResolveTag_))};
@@ -29,12 +29,12 @@ void AnalyzerExecutor::run()
     QThread::exec();
 }
 
-AnalyzerExecutor::AnalyzerExecutor(QSharedPointer<QLibrary> libPtr, const QJsonObject& paramsObject, QObject *parent)
+AnalyzerShell::AnalyzerShell(QSharedPointer<QLibrary> libPtr, const QJsonObject& paramsObject, QObject *parent)
     :QThread{parent},libPtr_{libPtr},paramsObject_{paramsObject}
 {
 }
 
-AnalyzerExecutor::~AnalyzerExecutor()
+AnalyzerShell::~AnalyzerShell()
 {
     QThread::quit();
     QThread::wait();

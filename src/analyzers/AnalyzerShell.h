@@ -1,5 +1,5 @@
-#ifndef ANALYZEREXECUTOR_H
-#define ANALYZEREXECUTOR_H
+#ifndef ANALYZERSHELL_H
+#define ANALYZERSHELL_H
 
 #include <QObject>
 #include <QThread>
@@ -12,7 +12,7 @@ class IAnalyzer;
 using makeTypeFunc=const char*(*)();
 using makeAnalyzerFunc=IAnalyzer*(*)();
 
-class AnalyzerExecutor : public QThread
+class AnalyzerShell : public QThread
 {
     Q_OBJECT
 private:
@@ -25,11 +25,13 @@ private:
 protected:
     virtual void run()override;
 public:
-    explicit AnalyzerExecutor(QSharedPointer<QLibrary> libPtr, const QJsonObject &paramsObject, QObject* parent=nullptr);
-    virtual ~AnalyzerExecutor();
+    explicit AnalyzerShell(QSharedPointer<QLibrary> libPtr, const QJsonObject &paramsObject, QObject* parent=nullptr);
+    AnalyzerShell(const AnalyzerShell& other)=delete;
+    AnalyzerShell& operator=(const AnalyzerShell& other)=delete;
+    virtual ~AnalyzerShell();
 signals:
     void progressSignal(const QByteArray& data);
     void finishedSignal(const QString& lastError);
 };
 
-#endif // ANALYZEREXECUTOR_H
+#endif // ANALYZERSHELL_H
