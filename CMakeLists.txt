@@ -20,9 +20,15 @@ set(SPDLOG_BUILD_SHARED OFF)
 set(SPDLOG_WCHAR_FILENAMES ON)
 
 #rpath
-SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
-SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
-SET(CMAKE_INSTALL_RPATH "\$ORIGIN/../lib;\$ORIGIN/../lib64")
+set(CMAKE_SKIP_BUILD_RPATH  FALSE)
+set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+set(CMAKE_INSTALL_RPATH "\$ORIGIN/../lib;\$ORIGIN/../lib64")
+
+#linker
+set(LINK_LIBRARIES
+    -static-libgcc
+    -static-libstdc++
+)
 
 #libraries
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/lib/libCore)
@@ -57,6 +63,7 @@ target_link_libraries(${PROJECT_NAME}
     Core
     Qwt
     spdlog
+    ${LINK_LIBRARIES}
 )
 
 install(TARGETS ${TARGET_NAME}
