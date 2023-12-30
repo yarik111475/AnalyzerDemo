@@ -4,11 +4,13 @@
 #include <QMap>
 #include <QMainWindow>
 #include <QJsonObject>
-
+#include <map>
+#include <memory>
 
 class QMenu;
 class QAction;
 class QSettings;
+class QMdiArea;
 class AnalyzerDialog;
 class AnalyzerLoader;
 class AnalyzerSettings;
@@ -16,14 +18,15 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 private:
+    QMdiArea* mdiAreaPtr_ {nullptr};
     AnalyzerLoader& analyzerLoader_;
     AnalyzerSettings& analyzerSettings_;
-    QSharedPointer<QSettings> appSettingsPtr_ {nullptr};
-    QMap<QString,QString> analyzersMap_;
+    std::shared_ptr<QSettings> appSettingsPtr_ {nullptr};
+    std::map<QString,QString> analyzersMap_;
 
     void makeMenu();
 public:
-    explicit MainWindow(QSharedPointer<QSettings> appSettingsPtr,QWidget *parent = nullptr);
+    explicit MainWindow(std::shared_ptr<QSettings> appSettingsPtr,QWidget *parent = nullptr);
 
 signals:
 

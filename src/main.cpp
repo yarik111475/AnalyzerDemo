@@ -10,7 +10,7 @@
 #include <spdlog/sinks/rotating_file_sink.h>
 
 std::shared_ptr<spdlog::logger> loggerPtr_ {nullptr};
-QSharedPointer<QSettings> appSettingsPtr_ {nullptr};
+std::shared_ptr<QSettings> appSettingsPtr_ {nullptr};
 
 void initLogger();
 void initSettings();

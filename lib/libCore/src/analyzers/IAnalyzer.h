@@ -14,14 +14,24 @@
 #include <string>
 #include <functional>
 
+class QWidget;
 class IAnalyzer
 {
 protected:
-    QJsonObject paramsObject_ {};
+    QJsonObject standardSettings_ {};
+    QJsonObject extendedSettings_ {};
 public:
     explicit IAnalyzer()=default;
     virtual ~IAnalyzer()=default;
-    virtual void handle(const QJsonObject& parameObject)=0;
+
+    virtual QWidget* standardWidget()=0;
+    virtual QWidget* extendedWidget()=0;
+    virtual void handle()=0;
+
+    inline void initStandard(const QJsonObject& standardSettings){
+        standardSettings_=standardSettings;
+    }
+
     std::function<void(const QString& obj,const QString& msg)> logFunc_ {nullptr};
     std::function<void(const QByteArray& data)> progressFunc_ {nullptr};
 };

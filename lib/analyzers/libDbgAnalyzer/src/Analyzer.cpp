@@ -1,8 +1,19 @@
 #include "Analyzer.h"
 
-void Analyzer::handle(const QJsonObject &paramsObject)
+QWidget *Analyzer::standardWidget()
 {
 
 }
+
+QWidget *Analyzer::extendedWidget()
+{
+
+}
+
+void Analyzer::handle()
+{
+
+}
+
 
 

@@ -6,7 +6,7 @@
 #include <QMenu>
 #include <QAction>
 #include <QMenuBar>
-#include <QPointer>
+#include <QMdiArea>
 
 void MainWindow::makeMenu()
 {
@@ -28,12 +28,14 @@ void MainWindow::makeMenu()
     menuBar()->addMenu(analyzersMenuPtr);
 }
 
-MainWindow::MainWindow(QSharedPointer<QSettings> appSettingsPtr, QWidget *parent)
+MainWindow::MainWindow(std::shared_ptr<QSettings> appSettingsPtr, QWidget *parent)
     : QMainWindow(parent),
+      mdiAreaPtr_{new QMdiArea},
       analyzerLoader_{AnalyzerLoader::instance()},
       analyzerSettings_{AnalyzerSettings::instance()},
       appSettingsPtr_{appSettingsPtr}
 {
     makeMenu();
+    setCentralWidget(mdiAreaPtr_);
     resize(800,600);
 }

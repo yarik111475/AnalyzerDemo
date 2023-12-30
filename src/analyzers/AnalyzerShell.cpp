@@ -17,7 +17,7 @@ void AnalyzerShell::run()
             analyzerPtr_->progressFunc_=[&](const QByteArray& data){
                 emit progressSignal(data);
             };
-            analyzerPtr_->handle(paramsObject_);
+            //analyzerPtr_->handle(paramsObject_);
         }
     }
     catch(const std::exception& ex){
