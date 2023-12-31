@@ -12,10 +12,10 @@ AnalyzerLoader::AnalyzerLoader()
     const QStringList nameFilters {"*.dll","*.so"};
     const auto librariesList {QDir{analyzersPath_}.entryInfoList(nameFilters,QDir::Files)};
     std::for_each(librariesList.begin(),librariesList.end(),[&](const QFileInfo& fileInfo){
-        QSharedPointer<QLibrary> libPtr {new QLibrary(fileInfo.absoluteFilePath())};
+        std::shared_ptr<QLibrary> libPtr {new QLibrary(fileInfo.absoluteFilePath())};
         if(libPtr->load()){
-            makeTypeFunc typeMaker {(makeTypeFunc)libPtr->resolve(qPrintable(typeResolveTag_))};
-            makeAnalyzerFunc analyzerMaker {(makeAnalyzerFunc)libPtr->resolve(qPrintable(analyzerResolveTag_))};
+            typeFunc typeMaker {(typeFunc)libPtr->resolve(qPrintable(typeResolveTag_))};
+            analyzerFunc analyzerMaker {(analyzerFunc)libPtr->resolve(qPrintable(analyzerResolveTag_))};
             if(typeMaker && analyzerMaker){
                 const QString type {typeMaker()};
                 librariesMap_.emplace(type,libPtr);
@@ -24,11 +24,23 @@ AnalyzerLoader::AnalyzerLoader()
     });
 }
 
-QSharedPointer<QLibrary> AnalyzerLoader::getLibrary(const QString key)
+std::shared_ptr<QLibrary> AnalyzerLoader::getLibrary(const QString &key)
 {
     auto it {librariesMap_.find(key)};
     if(it!=librariesMap_.end()){
         return it->second;
+    }
+    return nullptr;
+}
+
+std::shared_ptr<IAnalyzer> AnalyzerLoader::getAnalyzer(const QString &key)
+{
+    auto it {librariesMap_.find(key)};
+    if(it!=librariesMap_.end()){
+        analyzerFunc analyzerMaker {(analyzerFunc)it->second->resolve(qPrintable(analyzerResolveTag_))};
+        if(analyzerMaker){
+            return std::shared_ptr<IAnalyzer>(analyzerMaker());
+        }
     }
     return nullptr;
 }

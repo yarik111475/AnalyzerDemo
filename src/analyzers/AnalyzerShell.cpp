@@ -7,8 +7,8 @@
 void AnalyzerShell::run()
 {
     try{
-        makeTypeFunc typeMaker {(makeTypeFunc)libPtr_->resolve(qPrintable(typeResolveTag_))};
-        makeAnalyzerFunc analyzerMaker {(makeAnalyzerFunc)libPtr_->resolve(qPrintable(analyzerResolveTag_))};
+        typeFunc typeMaker {(typeFunc)libPtr_->resolve(qPrintable(typeResolveTag_))};
+        analyzerFunc analyzerMaker {(analyzerFunc)libPtr_->resolve(qPrintable(analyzerResolveTag_))};
         if(typeMaker && analyzerMaker){
             analyzerPtr_.reset(analyzerMaker());
             analyzerPtr_->logFunc_=[&](const QString& obj,const QString& msg){
@@ -29,7 +29,7 @@ void AnalyzerShell::run()
     QThread::exec();
 }
 
-AnalyzerShell::AnalyzerShell(QSharedPointer<QLibrary> libPtr, const QJsonObject& paramsObject, QObject *parent)
+AnalyzerShell::AnalyzerShell(std::shared_ptr<QLibrary> libPtr, const QJsonObject& paramsObject, QObject *parent)
     :QThread{parent},libPtr_{libPtr},paramsObject_{paramsObject}
 {
 }

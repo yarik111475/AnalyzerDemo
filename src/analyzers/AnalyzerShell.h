@@ -5,12 +5,12 @@
 #include <QThread>
 #include <QByteArray>
 #include <QJsonObject>
-#include <QSharedPointer>
+#include <memory>
 
 class QLibrary;
 class IAnalyzer;
-using makeTypeFunc=const char*(*)();
-using makeAnalyzerFunc=IAnalyzer*(*)();
+using typeFunc=const char*(*)();
+using analyzerFunc=IAnalyzer*(*)();
 
 class AnalyzerShell : public QThread
 {
@@ -20,12 +20,12 @@ private:
     const QString analyzerResolveTag_ {"makeAnalyzer"};
 
     QJsonObject paramsObject_ {};
-    QSharedPointer<QLibrary> libPtr_ {nullptr};
-    QSharedPointer<IAnalyzer> analyzerPtr_ {nullptr};
+    std::shared_ptr<QLibrary> libPtr_ {nullptr};
+    std::shared_ptr<IAnalyzer> analyzerPtr_ {nullptr};
 protected:
     virtual void run()override;
 public:
-    explicit AnalyzerShell(QSharedPointer<QLibrary> libPtr, const QJsonObject &paramsObject, QObject* parent=nullptr);
+    explicit AnalyzerShell(std::shared_ptr<QLibrary> libPtr, const QJsonObject &paramsObject, QObject* parent=nullptr);
     AnalyzerShell(const AnalyzerShell& other)=delete;
     AnalyzerShell& operator=(const AnalyzerShell& other)=delete;
     virtual ~AnalyzerShell();
