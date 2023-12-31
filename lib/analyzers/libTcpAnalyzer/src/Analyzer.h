@@ -8,17 +8,17 @@ class Analyzer : public IAnalyzer
 public:
     explicit Analyzer()=default;
     virtual ~Analyzer()=default;
-    virtual void handle(const QJsonObject& paramsObject)override;
-    virtual QWidget* settingsWidget(const QJsonObject& paramsObject)override;
-    virtual QDialog* settingsDialog(const QJsonObject& paramsObject)override;
+    virtual QWidget* standardWidget()override;
+    virtual QWidget* extendedWidget()override;
+    virtual void handle()override;
 };
 
-const char* makeType()
+const char* createType()
 {
     return "TcpAnalyzer";
 }
 
-IAnalyzer* makeAnalyzer()
+IAnalyzer* createAnalyzer()
 {
     return new Analyzer();
 }

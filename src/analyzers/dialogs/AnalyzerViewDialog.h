@@ -3,12 +3,12 @@
 
 #include <QDialog>
 
-class AnalyzerAddDialog : public QDialog
+class AnalyzerListDialog : public QDialog
 {
     Q_OBJECT
 public:
-    AnalyzerAddDialog(QWidget* parent=nullptr);
-    virtual ~AnalyzerAddDialog()=default;
+    AnalyzerListDialog(QWidget* parent=nullptr);
+    virtual ~AnalyzerListDialog()=default;
 };
 
 #endif // ANALYZERADDDIALOG_H

@@ -13,12 +13,12 @@ public:
     virtual void handle()override;
 };
 
-const char* makeType()
+const char* createType()
 {
     return "DbgAnalyzer";
 }
 
-IAnalyzer* makeAnalyzer()
+IAnalyzer* createAnalyzer()
 {
     return new Analyzer();
 }

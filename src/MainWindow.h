@@ -12,15 +12,13 @@ class QAction;
 class QSettings;
 class QMdiArea;
 class AnalyzerDialog;
-class AnalyzerLoader;
-class AnalyzerSettings;
+class AnalyzerStorage;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 private:
     QMdiArea* mdiAreaPtr_ {nullptr};
-    AnalyzerLoader& analyzerLoader_;
-    AnalyzerSettings& analyzerSettings_;
+    AnalyzerStorage& analyzerStorage_;
     std::shared_ptr<QSettings> appSettingsPtr_ {nullptr};
     std::map<QString,QString> analyzersMap_;
 

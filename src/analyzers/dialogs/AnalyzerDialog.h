@@ -5,32 +5,38 @@
 #include <QDialog>
 #include <QJsonObject>
 #include <QSharedPointer>
+#include <map>
 
 class QWidget;
 class QComboBox;
 class QLineEdit;
+class QStackedWidget;
 class QVBoxLayout;
 class QPushButton;
-class AnalyzerLoader;
-class AnalyzerSettings;
+class AnalyzerModel;
+class AnalyzerStorage;
 
 class AnalyzerDialog : public QDialog
 {
     Q_OBJECT
 private:
-    AnalyzerLoader& analyzerLoader_;
-    AnalyzerSettings& analyzerSettings_;
+    AnalyzerModel* analyzerModelPtr_ {nullptr};
+    AnalyzerStorage& analyzerStorage_;
 
-    QComboBox* analyzersComboBoxPtr_    {nullptr};
-    QPushButton* analyzersAddButtonPtr_ {nullptr};
-    QLineEdit* matrixLineEditPtr_       {nullptr};
-    QPushButton* matrixAddButtonPtr_    {nullptr};
+    QComboBox* analyzersComboBoxPtr_ {nullptr};
+    QPushButton* analyzersViewButtonPtr_ {nullptr};
+    QLineEdit* matrixLineEditPtr_                {nullptr};
+    QPushButton* matrixAddButtonPtr_      {nullptr};
     QVBoxLayout* settingsVBoxLayoutPtr_ {nullptr};
-
-    void resetSettings(const QString& test);
+    QStackedWidget* stackedWidgetPtr_     {nullptr};
+    void resetSettingsWidget(int index);
 public:
     explicit AnalyzerDialog(QWidget *parent = nullptr);
     virtual ~AnalyzerDialog()=default;
+
+private slots:
+    void analyzersViewSlot();
+    void matrixAddSlot();
 
 signals:
 

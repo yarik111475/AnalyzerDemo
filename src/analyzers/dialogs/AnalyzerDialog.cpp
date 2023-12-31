@@ -1,6 +1,7 @@
 #include "AnalyzerDialog.h"
-#include "analyzers/AnalyzerLoader.h"
-#include "analyzers/AnalyzerSettings.h"
+#include "analyzers/IAnalyzer.h"
+#include "analyzers/AnalyzerModel.h"
+#include "analyzers/AnalyzerStorage.h"
 
 #include <QFrame>
 #include <QLabel>
@@ -12,45 +13,45 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
+#include <QStackedWidget>
 #include <algorithm>
 
-void AnalyzerDialog::resetSettings(const QString &text)
+#include <QDebug>
+
+void AnalyzerDialog::resetSettingsWidget(int index)
 {
-    const auto analyzersMap {analyzerSettings_.getAnalyzers()};
-    const auto found {std::find_if(analyzersMap.begin(),analyzersMap.end(),[&](const std::pair<QString,QJsonObject>& pair){
-            const auto name {pair.second.value("name").toString()};
-            return name==analyzersComboBoxPtr_->currentText();
-        })};
-
-    if(found!=analyzersMap.end()){
-        const auto key {found->second.value("type").toString()};
-
-    }
+    stackedWidgetPtr_->setCurrentIndex(index);
 }
 
 AnalyzerDialog::AnalyzerDialog(QWidget *parent)
     : QDialog{parent},
-      analyzerLoader_{AnalyzerLoader::instance()},
-      analyzerSettings_{AnalyzerSettings::instance()},
+      analyzerModelPtr_{new AnalyzerModel},
+      analyzerStorage_{AnalyzerStorage::instance()},
       analyzersComboBoxPtr_{new QComboBox},
-      analyzersAddButtonPtr_{new QPushButton(QObject::tr("..."))},
+      analyzersViewButtonPtr_{new QPushButton(QObject::tr("..."))},
       matrixLineEditPtr_{new QLineEdit},
       matrixAddButtonPtr_{new QPushButton(QObject::tr("..."))},
-      settingsVBoxLayoutPtr_{new QVBoxLayout}
+      settingsVBoxLayoutPtr_{new QVBoxLayout},
+      stackedWidgetPtr_{new QStackedWidget}
 {
     QGridLayout* analyzersGridLayoutPtr {new QGridLayout};
     analyzersGridLayoutPtr->addWidget(new QLabel(QObject::tr("Analyzer:")),0,0);
     analyzersGridLayoutPtr->addWidget(analyzersComboBoxPtr_,1,0,1,3);
-    analyzersGridLayoutPtr->addWidget(analyzersAddButtonPtr_,1,4,1,1);
+    analyzersGridLayoutPtr->addWidget(analyzersViewButtonPtr_,1,4,1,1);
+    QObject::connect(analyzersViewButtonPtr_,&QPushButton::clicked,
+                     this,&AnalyzerDialog::analyzersViewSlot);
 
     analyzersGridLayoutPtr->addWidget(new QLabel(QObject::tr("Response matrix:")),2,0);
     analyzersGridLayoutPtr->addWidget(matrixLineEditPtr_,3,0,1,3);
     analyzersGridLayoutPtr->addWidget(matrixAddButtonPtr_,3,4,1,1);
+    QObject::connect(matrixAddButtonPtr_,&QPushButton::clicked,
+                     this,&AnalyzerDialog::matrixAddSlot);
 
     QGroupBox* analyzersGroupBoxPtr {new QGroupBox(QObject::tr("Analyzers"))};
     analyzersGroupBoxPtr->setLayout(analyzersGridLayoutPtr);
 
     QGroupBox* settingsGroupBoxPtr {new QGroupBox(QObject::tr("Settings"))};
+    settingsVBoxLayoutPtr_->addWidget(stackedWidgetPtr_);
     settingsGroupBoxPtr->setLayout(settingsVBoxLayoutPtr_);
 
     QVBoxLayout* vboxLayoutPtr {new QVBoxLayout};
@@ -76,17 +77,34 @@ AnalyzerDialog::AnalyzerDialog(QWidget *parent)
     mainVBoxLayoutPtr->addLayout(hboxLayoutPtr,0);
     setLayout(mainVBoxLayoutPtr);
 
-    const auto analyzersMap {analyzerSettings_.getAnalyzers()};
-    std::for_each(analyzersMap.begin(),analyzersMap.end(),[=](const std::pair<QString,QJsonObject>& pair){
-        const QString analyzerName {pair.second.value("name").toString()};
-        analyzersComboBoxPtr_->addItem(analyzerName);
+    QObject::connect(analyzersComboBoxPtr_,QOverload<int>::of(&QComboBox::activated),[&](int index){
+        resetSettingsWidget(analyzersComboBoxPtr_->currentIndex());
     });
 
-    resetSettings(analyzersComboBoxPtr_->currentText());
-    QObject::connect(analyzersComboBoxPtr_,QOverload<const QString &>::of(&QComboBox::activated),
-                     [=](const QString& text){
-        resetSettings(text);
+    ViewsContainer viewsContainer {analyzerStorage_.getAnalyzerViews()};
+    std::for_each(viewsContainer.begin(),viewsContainer.end(),[&](const std::tuple<QString,QString,QString>& dataTuple){
+        const QString analyzerId {std::get<0>(dataTuple)};
+        const auto analyzerPtr {analyzerStorage_.getAnalyzerInstance(analyzerId)};
+        if(analyzerPtr){
+           stackedWidgetPtr_->addWidget(analyzerPtr->standardWidget());
+        }
     });
+    analyzerModelPtr_->setViewsContainer(viewsContainer);
+    analyzersComboBoxPtr_->setModel(analyzerModelPtr_);
+    resetSettingsWidget(analyzersComboBoxPtr_->currentIndex());
+
+    setWindowFlags(Qt::Dialog|Qt::WindowCloseButtonHint);
+    setWindowTitle(QObject::tr("Analyzers"));
+}
+
+void AnalyzerDialog::analyzersViewSlot()
+{
+
+}
+
+void AnalyzerDialog::matrixAddSlot()
+{
+
 }
 
 

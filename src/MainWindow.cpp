@@ -1,6 +1,5 @@
 #include "MainWindow.h"
-#include "analyzers/AnalyzerLoader.h"
-#include "analyzers/AnalyzerSettings.h"
+#include "analyzers/AnalyzerStorage.h"
 #include "analyzers/dialogs/AnalyzerDialog.h"
 
 #include <QMenu>
@@ -31,8 +30,7 @@ void MainWindow::makeMenu()
 MainWindow::MainWindow(std::shared_ptr<QSettings> appSettingsPtr, QWidget *parent)
     : QMainWindow(parent),
       mdiAreaPtr_{new QMdiArea},
-      analyzerLoader_{AnalyzerLoader::instance()},
-      analyzerSettings_{AnalyzerSettings::instance()},
+      analyzerStorage_{AnalyzerStorage::instance()},
       appSettingsPtr_{appSettingsPtr}
 {
     makeMenu();
