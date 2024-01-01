@@ -31,8 +31,8 @@ AnalyzerNewDialog::AnalyzerNewDialog(AnalyzerStorage &analyzerStorage, QWidget *
     formLayoutPtr->addRow(QObject::tr("Analyzer type:"),typesComboBoxPtr_);
     formLayoutPtr->addRow(QObject::tr("Analyzer name:"),nameLineEditPtr_);
 
-    QPushButton* saveButtonPtr {new QPushButton(QObject::tr("Save"))};
-    QObject::connect(saveButtonPtr,&QPushButton::clicked,
+    QPushButton* okButtonPtr {new QPushButton(QObject::tr("Ok"))};
+    QObject::connect(okButtonPtr,&QPushButton::clicked,
                      [this](){
         if(nameLineEditPtr_->text().isEmpty()){
             QMessageBox::warning(this,QObject::tr("Warning"),QObject::tr("You must enter analyzer name!"));
@@ -49,7 +49,7 @@ AnalyzerNewDialog::AnalyzerNewDialog(AnalyzerStorage &analyzerStorage, QWidget *
 
     QHBoxLayout* btnHBoxLayoutPtr {new QHBoxLayout};
     btnHBoxLayoutPtr->addStretch(5);
-    btnHBoxLayoutPtr->addWidget(saveButtonPtr);
+    btnHBoxLayoutPtr->addWidget(okButtonPtr);
     btnHBoxLayoutPtr->addWidget(cancelButtonPtr);
 
     QVBoxLayout* mainVBoxLayoutPtr {new QVBoxLayout};

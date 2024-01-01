@@ -61,19 +61,19 @@ AnalyzerDialog::AnalyzerDialog(QWidget *parent)
     vboxLayoutPtr->addWidget(analyzersGroupBoxPtr,0);
     vboxLayoutPtr->addWidget(settingsGroupBoxPtr,5);
 
-    QPushButton* acceptButtonPtr {new QPushButton(QObject::tr("Ok"))};
-    QObject::connect(acceptButtonPtr,&QPushButton::clicked,[&](){
+    QPushButton* saveButtonPtr {new QPushButton(QObject::tr("Save"))};
+    QObject::connect(saveButtonPtr,&QPushButton::clicked,[&](){
         accept();
     });
-    QPushButton* rejectButtonPtr {new QPushButton(QObject::tr("Cancel"))};
-    QObject::connect(rejectButtonPtr,&QPushButton::clicked,[&](){
+    QPushButton* cancelButtonPtr {new QPushButton(QObject::tr("Cancel"))};
+    QObject::connect(cancelButtonPtr,&QPushButton::clicked,[&](){
         reject();
     });
 
     QHBoxLayout* btnHBoxLayoutPtr {new QHBoxLayout};
     btnHBoxLayoutPtr->addStretch(5);
-    btnHBoxLayoutPtr->addWidget(acceptButtonPtr);
-    btnHBoxLayoutPtr->addWidget(rejectButtonPtr);
+    btnHBoxLayoutPtr->addWidget(saveButtonPtr);
+    btnHBoxLayoutPtr->addWidget(cancelButtonPtr);
 
     QVBoxLayout* mainVBoxLayoutPtr {new QVBoxLayout};
     mainVBoxLayoutPtr->addLayout(vboxLayoutPtr,5);
