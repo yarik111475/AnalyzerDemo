@@ -28,12 +28,12 @@ AnalyzerStorage::AnalyzerStorage()
     });
 
 #ifdef Q_OS_WIN
-    const QString homeDir_=qgetenv("USERPROFILE");
+    const QString homeDir=qgetenv("USERPROFILE");
 #endif
 #ifdef Q_OS_LINUX
-    homeDir_=qgetenv("HOME");
+    const QString homeDir {qgetenv("HOME")};
 #endif
-    const auto settingsPath {QStringLiteral("%1/%2/%3").arg(homeDir_,appDir_,settingsFilename_)};
+    const auto settingsPath {QStringLiteral("%1/%2/%3").arg(homeDir,appDir_,settingsFilename_)};
     QSettings settings {settingsPath,QSettings::IniFormat};
 
     const auto analyzersIdList {settings.value("analyzers").toStringList()};
