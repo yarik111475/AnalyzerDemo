@@ -113,9 +113,10 @@ void AnalyzerDialog::analyzersViewSlot()
         const bool removeOk {analyzerStorage_.removeAnalyzerInstance(analyzerId)};
         if(removeOk){
             QWidget* standardWidgetPtr {stackedWidgetPtr_->widget(selectedRow)};
-            stackedWidgetPtr_->removeWidget(standardWidgetPtr);
-            standardWidgetPtr->deleteLater();
-
+            if(standardWidgetPtr){
+                stackedWidgetPtr_->removeWidget(standardWidgetPtr);
+                standardWidgetPtr->deleteLater();
+            }
             const ViewsContainer containerAfter {analyzerStorage_.getAnalyzerViews()};
             analyzerModelPtr_->setViewsContainer(containerAfter);
         }
@@ -129,8 +130,10 @@ void AnalyzerDialog::analyzersViewSlot()
             const ViewsContainer containerAfter {analyzerStorage_.getAnalyzerViews()};
             analyzerModelPtr_->setViewsContainer(containerAfter);
             auto instancePtr {analyzerStorage_.getAnalyzerInstance(analyzerId)};
-            QWidget* standardWidgetPtr {instancePtr->standardWidget()};
-            stackedWidgetPtr_->addWidget(standardWidgetPtr);
+            if(instancePtr){
+                QWidget* standardWidgetPtr {instancePtr->standardWidget()};
+                stackedWidgetPtr_->addWidget(standardWidgetPtr);
+            }
         }
     });
     viewDialog.exec();

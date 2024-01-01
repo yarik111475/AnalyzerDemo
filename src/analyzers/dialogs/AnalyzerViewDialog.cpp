@@ -1,7 +1,7 @@
 #include "AnalyzerViewDialog.h"
 #include "analyzers/AnalyzerModel.h"
 #include "analyzers/AnalyzerStorage.h"
-#include "analyzers/dialogs/AnalyzerNewDialog.h"
+#include "analyzers/dialogs/AnalyzerAddDialog.h"
 
 #include <QFrame>
 #include <QString>
@@ -65,10 +65,10 @@ AnalyzerViewDialog::AnalyzerViewDialog(AnalyzerModel *analyzerModelPtr, Analyzer
 
 void AnalyzerViewDialog::addSlot()
 {
-    AnalyzerNewDialog dialog {analyzerStorage_,this};
-    QObject::connect(&dialog,&AnalyzerNewDialog::addSignal,
+    AnalyzerAddDialog addDialog {analyzerStorage_,this};
+    QObject::connect(&addDialog,&AnalyzerAddDialog::addSignal,
                      this,&AnalyzerViewDialog::addSignal);
-    dialog.exec();
+    addDialog.exec();
 }
 
 void AnalyzerViewDialog::editSlot()

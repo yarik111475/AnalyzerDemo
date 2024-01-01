@@ -1,4 +1,4 @@
-#include "AnalyzerNewDialog.h"
+#include "AnalyzerAddDialog.h"
 #include "analyzers/AnalyzerStorage.h"
 
 #include <QLabel>
@@ -12,7 +12,7 @@
 #include <QMessageBox>
 #include <algorithm>
 
-AnalyzerNewDialog::AnalyzerNewDialog(AnalyzerStorage &analyzerStorage, QWidget *parent)
+AnalyzerAddDialog::AnalyzerAddDialog(AnalyzerStorage &analyzerStorage, QWidget *parent)
     :QDialog{parent},
       analyzerStorage_{analyzerStorage},
       typesComboBoxPtr_{new QComboBox},

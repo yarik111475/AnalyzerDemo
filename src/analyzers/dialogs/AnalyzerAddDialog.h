@@ -6,7 +6,7 @@
 class QLineEdit;
 class QComboBox;
 class AnalyzerStorage;
-class AnalyzerNewDialog : public QDialog
+class AnalyzerAddDialog : public QDialog
 {
     Q_OBJECT
 private:
@@ -14,8 +14,8 @@ private:
     QComboBox* typesComboBoxPtr_ {nullptr};
     QLineEdit* nameLineEditPtr_  {nullptr};
 public:
-    explicit AnalyzerNewDialog(AnalyzerStorage& analyzerStorage,QWidget* parent=nullptr);
-    virtual ~AnalyzerNewDialog()=default;
+    explicit AnalyzerAddDialog(AnalyzerStorage& analyzerStorage,QWidget* parent=nullptr);
+    virtual ~AnalyzerAddDialog()=default;
 signals:
     void addSignal(const QString& analyzerType,const QString& analyzerName);
 };
