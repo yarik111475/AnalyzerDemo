@@ -15,6 +15,7 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QStackedWidget>
+#include <QApplication>
 #include <algorithm>
 
 #include <QDebug>
@@ -82,7 +83,7 @@ AnalyzerDialog::AnalyzerDialog(QWidget *parent)
         resetSettingsWidget(analyzersComboBoxPtr_->currentIndex());
     });
 
-    ViewsContainer viewsContainer {analyzerStorage_.getAnalyzerViews()};
+    const ViewsContainer viewsContainer {analyzerStorage_.getAnalyzerViews()};
     std::for_each(viewsContainer.begin(),viewsContainer.end(),[&](const std::tuple<QString,QString,QString,QString>& dataTuple){
         const QString analyzerId {std::get<3>(dataTuple)};
         const auto analyzerPtr {analyzerStorage_.getAnalyzerInstance(analyzerId)};
@@ -95,7 +96,7 @@ AnalyzerDialog::AnalyzerDialog(QWidget *parent)
     resetSettingsWidget(analyzersComboBoxPtr_->currentIndex());
 
     setWindowFlags(Qt::Dialog|Qt::WindowCloseButtonHint);
-    setWindowTitle(QObject::tr("Analyzers"));
+    setWindowTitle(qApp->applicationName());
 }
 
 void AnalyzerDialog::analyzersViewSlot()

@@ -16,6 +16,12 @@ private:
 public:
     AnalyzerViewDialog(AnalyzerModel* analyzerModelPtr, AnalyzerStorage& analyzerStorage,QWidget* parent=nullptr);
     virtual ~AnalyzerViewDialog()=default;
+
+private slots:
+    void addSlot();
+    void editSlot();
+    void removeSlot();
+    void saveSlot();
 };
 
 #endif // ANALYZERADDDIALOG_H

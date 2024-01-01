@@ -1,6 +1,7 @@
 #include <QSharedPointer>
 #include <QApplication>
 #include <QSettings>
+#include <QString>
 #include <QDir>
 #include <memory>
 
@@ -9,6 +10,8 @@
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include <spdlog/sinks/rotating_file_sink.h>
 
+const QString appName {"SpectrumHero"};
+const QString orgName  {"Gammatech"};
 std::shared_ptr<spdlog::logger> loggerPtr_ {nullptr};
 std::shared_ptr<QSettings> appSettingsPtr_ {nullptr};
 
@@ -19,6 +22,8 @@ void msgHandler(QtMsgType type, const QMessageLogContext &context, const QString
 int main(int argc, char *argv[])
 {
     QApplication app{argc,argv};
+    app.setApplicationName(appName);
+    app.setOrganizationName(orgName);
     initLogger();
     initSettings();
     qInstallMessageHandler(msgHandler);
