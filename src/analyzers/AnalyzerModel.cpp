@@ -34,19 +34,40 @@ QVariant AnalyzerModel::data(const QModelIndex &index, int role) const
         const auto dataTuple {viewsContainer_.at(row)};
         switch(column){
         case 0:
-            return std::get<2>(dataTuple);//name
-            break;
+            return std::get<0>(dataTuple);//name
         case 1:
            return std::get<1>(dataTuple);//type
-            break;
         case 2:
-            return std::get<0>(dataTuple);//id
-            break;
+            return std::get<2>(dataTuple);//state
+        case 3:
+            return std::get<3>(dataTuple);//id
         default:
             return QVariant{};
         }
     }
     return QVariant{};
+}
+
+QVariant AnalyzerModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if(orientation==Qt::Horizontal && role==Qt::DisplayRole){
+        switch (section){
+        case 0:
+            return QObject::tr("Name");
+        case 1:
+            return QObject::tr("Type");
+        case 2:
+            return QObject::tr("State");
+        case 3:
+            return QObject::tr("Id");
+        default:
+            return QVariant{};
+        }
+    }
+    if(orientation==Qt::Vertical && role==Qt::DisplayRole){
+        return QString::number(section);
+    }
+    return QVariant {};
 }
 
 void AnalyzerModel::setViewsContainer(const ViewsContainer &viewsContainer)

@@ -92,7 +92,8 @@ ViewsContainer AnalyzerStorage::getAnalyzerViews() const
         const QJsonObject standardSettings {pair.second->standardSettings()};
         const QString analyzerName {standardSettings.value("name").toString()};
         const QString analyzerType {standardSettings.value("type").toString()};
-        return std::make_tuple(pair.first,analyzerType,analyzerName);
+        const QString analyzerState {pair.second->analyzerState()==State::Enabled ? "Enabled"  : "Disabled"};
+        return std::make_tuple(analyzerName,analyzerType,analyzerState,pair.first);
     });
     return viewsContainer;
 }

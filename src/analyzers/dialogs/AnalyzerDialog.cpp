@@ -2,6 +2,7 @@
 #include "analyzers/IAnalyzer.h"
 #include "analyzers/AnalyzerModel.h"
 #include "analyzers/AnalyzerStorage.h"
+#include "analyzers/dialogs/AnalyzerViewDialog.h"
 
 #include <QFrame>
 #include <QLabel>
@@ -82,8 +83,8 @@ AnalyzerDialog::AnalyzerDialog(QWidget *parent)
     });
 
     ViewsContainer viewsContainer {analyzerStorage_.getAnalyzerViews()};
-    std::for_each(viewsContainer.begin(),viewsContainer.end(),[&](const std::tuple<QString,QString,QString>& dataTuple){
-        const QString analyzerId {std::get<0>(dataTuple)};
+    std::for_each(viewsContainer.begin(),viewsContainer.end(),[&](const std::tuple<QString,QString,QString,QString>& dataTuple){
+        const QString analyzerId {std::get<3>(dataTuple)};
         const auto analyzerPtr {analyzerStorage_.getAnalyzerInstance(analyzerId)};
         if(analyzerPtr){
            stackedWidgetPtr_->addWidget(analyzerPtr->standardWidget());
@@ -99,7 +100,8 @@ AnalyzerDialog::AnalyzerDialog(QWidget *parent)
 
 void AnalyzerDialog::analyzersViewSlot()
 {
-
+    AnalyzerViewDialog viewDialog(analyzerModelPtr_,analyzerStorage_);
+    viewDialog.exec();
 }
 
 void AnalyzerDialog::matrixAddSlot()

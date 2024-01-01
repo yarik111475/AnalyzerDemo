@@ -3,12 +3,19 @@
 
 #include <QDialog>
 
-class AnalyzerListDialog : public QDialog
+class QTableView;
+class AnalyzerModel;
+class AnalyzerStorage;
+class AnalyzerViewDialog : public QDialog
 {
     Q_OBJECT
+private:
+    AnalyzerModel* analyzerModelPtr_;
+    AnalyzerStorage& analyzerStorage_;
+    QTableView* analyzersViewPtr_ {nullptr};
 public:
-    AnalyzerListDialog(QWidget* parent=nullptr);
-    virtual ~AnalyzerListDialog()=default;
+    AnalyzerViewDialog(AnalyzerModel* analyzerModelPtr, AnalyzerStorage& analyzerStorage,QWidget* parent=nullptr);
+    virtual ~AnalyzerViewDialog()=default;
 };
 
 #endif // ANALYZERADDDIALOG_H

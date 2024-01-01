@@ -17,7 +17,7 @@ using AnalyzerFunc=IAnalyzer*(*)();
 using Instance=std::shared_ptr<IAnalyzer>;
 using LibrariesContainer=std::map<QString,std::shared_ptr<QLibrary>>;
 using TypesContainer=std::vector<QString>;
-using ViewsContainer=std::vector<std::tuple<QString,QString,QString>>;
+using ViewsContainer=std::vector<std::tuple<QString,QString,QString,QString>>;
 using InstancesContainer=std::map<QString,Instance>;
 
 class AnalyzerStorage

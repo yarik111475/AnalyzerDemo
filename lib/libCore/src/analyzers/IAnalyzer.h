@@ -14,10 +14,16 @@
 #include <string>
 #include <functional>
 
+enum class State{
+    Enabled=1,
+    Disabled=0
+};
+
 class QWidget;
 class IAnalyzer
 {
 protected:
+    State analyzerState_ {State::Disabled};
     QJsonObject standardSettings_ {};
     QJsonObject extendedSettings_ {};
 public:
@@ -30,6 +36,9 @@ public:
 
     inline void initAnalyzer(const QJsonObject& standardSettings){
         standardSettings_=standardSettings;
+    }
+    inline State analyzerState()const{
+        return analyzerState_;
     }
     inline QJsonObject standardSettings()const{
         return standardSettings_;
