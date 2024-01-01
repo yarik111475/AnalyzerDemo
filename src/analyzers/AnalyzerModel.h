@@ -12,7 +12,7 @@ class AnalyzerModel : public QAbstractTableModel
 {
     Q_OBJECT
 private:
-    const int columns_ {3};
+    const int columns_ {4};
     ViewsContainer viewsContainer_ {};
 public:
     explicit AnalyzerModel(QObject *parent = nullptr);

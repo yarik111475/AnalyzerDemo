@@ -43,6 +43,9 @@ public:
     ~AnalyzerStorage();
 
     Instance getAnalyzerInstance(const QString& analyzerId);
+    bool removeAnalyzerInstance(const QString& analyzerId);
+    bool addAnalyzerInstance(const QString& analyzerId,const QString& analyzerType,const QString& analyzerName);
+
     TypesContainer getAnalyserTypes()const;
     ViewsContainer getAnalyzerViews()const;
     InstancesContainer getAnalyzerInstances()const;

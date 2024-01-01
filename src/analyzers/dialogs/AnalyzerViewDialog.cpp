@@ -1,5 +1,7 @@
 #include "AnalyzerViewDialog.h"
 #include "analyzers/AnalyzerModel.h"
+#include "analyzers/AnalyzerStorage.h"
+#include "analyzers/dialogs/AnalyzerNewDialog.h"
 
 #include <QFrame>
 #include <QString>
@@ -10,6 +12,7 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QHeaderView>
+#include <QItemSelectionModel>
 #include <QApplication>
 
 AnalyzerViewDialog::AnalyzerViewDialog(AnalyzerModel *analyzerModelPtr, AnalyzerStorage &analyzerStorage, QWidget *parent)
@@ -31,21 +34,18 @@ AnalyzerViewDialog::AnalyzerViewDialog(AnalyzerModel *analyzerModelPtr, Analyzer
     QPushButton* removeButtonPtr {new QPushButton(QObject::tr("Remove"))};
     QObject::connect(removeButtonPtr,&QPushButton::clicked,
                      this,&AnalyzerViewDialog::removeSlot);
-    QPushButton* saveButtonPtr {new QPushButton(QObject::tr("Save"))};
-    QObject::connect(saveButtonPtr,&QPushButton::clicked,
-                     this,&AnalyzerViewDialog::saveSlot);
-    QPushButton* cancelButtonPtr {new QPushButton(QObject::tr("Cancel"))};
-    QObject::connect(cancelButtonPtr,&QPushButton::clicked,
+    QPushButton* closeButtonPtr {new QPushButton(QObject::tr("Close"))};
+    QObject::connect(closeButtonPtr,&QPushButton::clicked,
                      [this](){
-        reject();
+        accept();
     });
 
     QHBoxLayout* btnHBoxLayoutPtr {new QHBoxLayout};
+    btnHBoxLayoutPtr->addStretch(5);
     btnHBoxLayoutPtr->addWidget(addButtonPtr);
     btnHBoxLayoutPtr->addWidget(editButtonPtr);
     btnHBoxLayoutPtr->addWidget(removeButtonPtr);
-    btnHBoxLayoutPtr->addWidget(saveButtonPtr);
-    btnHBoxLayoutPtr->addWidget(cancelButtonPtr);
+    btnHBoxLayoutPtr->addWidget(closeButtonPtr);
 
     QFrame* btnFramePtr {new QFrame};
     btnFramePtr->setLayout(btnHBoxLayoutPtr);
@@ -65,17 +65,28 @@ AnalyzerViewDialog::AnalyzerViewDialog(AnalyzerModel *analyzerModelPtr, Analyzer
 
 void AnalyzerViewDialog::addSlot()
 {
-
+    AnalyzerNewDialog dialog {analyzerStorage_,this};
+    QObject::connect(&dialog,&AnalyzerNewDialog::addSignal,
+                     this,&AnalyzerViewDialog::addSignal);
+    dialog.exec();
 }
 
 void AnalyzerViewDialog::editSlot()
 {
-
+    const auto selectionModel {analyzersViewPtr_->selectionModel()->selectedRows()};
+    if(!selectionModel.isEmpty()){
+        const int selectedRow {selectionModel.at(0).row()};
+        emit editSignal(selectedRow);
+    }
 }
 
 void AnalyzerViewDialog::removeSlot()
 {
-
+    const auto selectionModel {analyzersViewPtr_->selectionModel()->selectedRows()};
+    if(!selectionModel.isEmpty()){
+        const int selectedRow {selectionModel.at(0).row()};
+        emit removeSignal(selectedRow);
+    }
 }
 
 void AnalyzerViewDialog::saveSlot()

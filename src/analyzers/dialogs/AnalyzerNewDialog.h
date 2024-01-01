@@ -3,11 +3,21 @@
 
 #include <QDialog>
 
+class QLineEdit;
+class QComboBox;
+class AnalyzerStorage;
 class AnalyzerNewDialog : public QDialog
 {
     Q_OBJECT
+private:
+    AnalyzerStorage& analyzerStorage_;
+    QComboBox* typesComboBoxPtr_ {nullptr};
+    QLineEdit* nameLineEditPtr_  {nullptr};
 public:
-    AnalyzerNewDialog();
+    explicit AnalyzerNewDialog(AnalyzerStorage& analyzerStorage,QWidget* parent=nullptr);
+    virtual ~AnalyzerNewDialog()=default;
+signals:
+    void addSignal(const QString& analyzerType,const QString& analyzerName);
 };
 
 #endif // ANALYZERNEWDIALOG_H

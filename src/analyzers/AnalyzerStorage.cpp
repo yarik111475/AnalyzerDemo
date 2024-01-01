@@ -72,6 +72,36 @@ Instance AnalyzerStorage::getAnalyzerInstance(const QString &analyzerId)
     return nullptr;
 }
 
+bool AnalyzerStorage::removeAnalyzerInstance(const QString &analyzerId)
+{
+    const auto it {instancesContainer_.find(analyzerId)};
+    if(it!=instancesContainer_.end()){
+        instancesContainer_.erase(it);
+        return true;
+    }
+    return false;
+}
+
+bool AnalyzerStorage::addAnalyzerInstance(const QString &analyzerId, const QString &analyzerType, const QString &analyzerName)
+{
+    const auto it {librariesContainer_.find(analyzerType)};
+    if(it!=librariesContainer_.end()){
+        std::shared_ptr<QLibrary> libPtr {it->second};
+        AnalyzerFunc analyzerFunc {(AnalyzerFunc)it->second->resolve(qPrintable(createResolveTag_))};
+        if(analyzerFunc){
+            std::shared_ptr<IAnalyzer> analyzerPtr {analyzerFunc()};
+            const QJsonObject standardSettings {
+                {"name",analyzerName},
+                {"type",analyzerType}
+            };
+            analyzerPtr->initAnalyzer(standardSettings);
+            instancesContainer_.emplace(analyzerId,analyzerPtr);
+            return true;
+        }
+    }
+    return false;
+}
+
 TypesContainer AnalyzerStorage::getAnalyserTypes() const
 {
     TypesContainer typesContainer {};

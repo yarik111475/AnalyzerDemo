@@ -4,6 +4,7 @@
 #include "analyzers/AnalyzerStorage.h"
 #include "analyzers/dialogs/AnalyzerViewDialog.h"
 
+#include <QUuid>
 #include <QFrame>
 #include <QLabel>
 #include <QLibrary>
@@ -69,31 +70,34 @@ AnalyzerDialog::AnalyzerDialog(QWidget *parent)
         reject();
     });
 
-    QHBoxLayout* hboxLayoutPtr {new QHBoxLayout};
-    hboxLayoutPtr->addStretch(5);
-    hboxLayoutPtr->addWidget(acceptButtonPtr);
-    hboxLayoutPtr->addWidget(rejectButtonPtr);
+    QHBoxLayout* btnHBoxLayoutPtr {new QHBoxLayout};
+    btnHBoxLayoutPtr->addStretch(5);
+    btnHBoxLayoutPtr->addWidget(acceptButtonPtr);
+    btnHBoxLayoutPtr->addWidget(rejectButtonPtr);
 
     QVBoxLayout* mainVBoxLayoutPtr {new QVBoxLayout};
     mainVBoxLayoutPtr->addLayout(vboxLayoutPtr,5);
-    mainVBoxLayoutPtr->addLayout(hboxLayoutPtr,0);
+    mainVBoxLayoutPtr->addLayout(btnHBoxLayoutPtr,0);
     setLayout(mainVBoxLayoutPtr);
 
-    QObject::connect(analyzersComboBoxPtr_,QOverload<int>::of(&QComboBox::activated),[&](int index){
+    QObject::connect(analyzersComboBoxPtr_,QOverload<int>::of(&QComboBox::activated),
+                     [&](int index){
         resetSettingsWidget(analyzersComboBoxPtr_->currentIndex());
     });
 
     const ViewsContainer viewsContainer {analyzerStorage_.getAnalyzerViews()};
-    std::for_each(viewsContainer.begin(),viewsContainer.end(),[&](const std::tuple<QString,QString,QString,QString>& dataTuple){
+    QObject::connect(analyzerModelPtr_,&QAbstractItemModel::modelReset,
+                     this,&AnalyzerDialog::modelResetSlot);
+    analyzerModelPtr_->setViewsContainer(viewsContainer);
+
+    std::for_each(viewsContainer.begin(),viewsContainer.end(),
+                  [&](const std::tuple<QString,QString,QString,QString>& dataTuple){
         const QString analyzerId {std::get<3>(dataTuple)};
         const auto analyzerPtr {analyzerStorage_.getAnalyzerInstance(analyzerId)};
         if(analyzerPtr){
-           stackedWidgetPtr_->addWidget(analyzerPtr->standardWidget());
+            stackedWidgetPtr_->addWidget(analyzerPtr->standardWidget());
         }
     });
-    analyzerModelPtr_->setViewsContainer(viewsContainer);
-    analyzersComboBoxPtr_->setModel(analyzerModelPtr_);
-    resetSettingsWidget(analyzersComboBoxPtr_->currentIndex());
 
     setWindowFlags(Qt::Dialog|Qt::WindowCloseButtonHint);
     setWindowTitle(qApp->applicationName());
@@ -101,13 +105,47 @@ AnalyzerDialog::AnalyzerDialog(QWidget *parent)
 
 void AnalyzerDialog::analyzersViewSlot()
 {
-    AnalyzerViewDialog viewDialog(analyzerModelPtr_,analyzerStorage_);
+    AnalyzerViewDialog viewDialog(analyzerModelPtr_,analyzerStorage_,this);
+    QObject::connect(&viewDialog,&AnalyzerViewDialog::removeSignal,
+                     [this](int selectedRow){
+        const ViewsContainer containerBefore {analyzerStorage_.getAnalyzerViews()};
+        const QString analyzerId {std::get<3>(containerBefore.at(selectedRow))};
+        const bool removeOk {analyzerStorage_.removeAnalyzerInstance(analyzerId)};
+        if(removeOk){
+            QWidget* standardWidgetPtr {stackedWidgetPtr_->widget(selectedRow)};
+            stackedWidgetPtr_->removeWidget(standardWidgetPtr);
+            standardWidgetPtr->deleteLater();
+
+            const ViewsContainer containerAfter {analyzerStorage_.getAnalyzerViews()};
+            analyzerModelPtr_->setViewsContainer(containerAfter);
+        }
+    });
+    QObject::connect(&viewDialog,&AnalyzerViewDialog::addSignal,
+                     [this](const QString& analyzerType,const QString& analyzerName){
+        const QUuid qUuid {QUuid::createUuid()};
+        const QString analyzerId {qUuid.toString(QUuid::WithoutBraces)};
+        const bool addOk {analyzerStorage_.addAnalyzerInstance(analyzerId,analyzerType,analyzerName)};
+        if(addOk){
+            const ViewsContainer containerAfter {analyzerStorage_.getAnalyzerViews()};
+            analyzerModelPtr_->setViewsContainer(containerAfter);
+            auto instancePtr {analyzerStorage_.getAnalyzerInstance(analyzerId)};
+            QWidget* standardWidgetPtr {instancePtr->standardWidget()};
+            stackedWidgetPtr_->addWidget(standardWidgetPtr);
+        }
+    });
     viewDialog.exec();
 }
 
 void AnalyzerDialog::matrixAddSlot()
 {
 
+}
+
+void AnalyzerDialog::modelResetSlot()
+{
+    analyzersComboBoxPtr_->setModel(analyzerModelPtr_);
+    analyzersComboBoxPtr_->setCurrentIndex(0);
+    resetSettingsWidget(analyzersComboBoxPtr_->currentIndex());
 }
 
 

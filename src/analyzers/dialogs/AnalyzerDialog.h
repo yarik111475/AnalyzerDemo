@@ -37,6 +37,7 @@ public:
 private slots:
     void analyzersViewSlot();
     void matrixAddSlot();
+    void modelResetSlot();
 
 signals:
 

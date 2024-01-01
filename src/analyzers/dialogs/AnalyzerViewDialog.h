@@ -14,7 +14,7 @@ private:
     AnalyzerStorage& analyzerStorage_;
     QTableView* analyzersViewPtr_ {nullptr};
 public:
-    AnalyzerViewDialog(AnalyzerModel* analyzerModelPtr, AnalyzerStorage& analyzerStorage,QWidget* parent=nullptr);
+    explicit AnalyzerViewDialog(AnalyzerModel* analyzerModelPtr, AnalyzerStorage& analyzerStorage,QWidget* parent=nullptr);
     virtual ~AnalyzerViewDialog()=default;
 
 private slots:
@@ -22,6 +22,11 @@ private slots:
     void editSlot();
     void removeSlot();
     void saveSlot();
+
+signals:
+    void editSignal(int selectedRow);
+    void removeSignal(int selectedRow);
+    void addSignal(const QString& analyzerType,const QString& analyzerName);
 };
 
 #endif // ANALYZERADDDIALOG_H
