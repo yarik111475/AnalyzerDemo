@@ -6,6 +6,7 @@
 #include <vector>
 #include <tuple>
 
+typedef std::tuple<QString,QString,QString,QString> ViewsItem;
 typedef std::vector<std::tuple<QString,QString,QString,QString>> ViewsContainer;
 
 class AnalyzerModel : public QAbstractTableModel
@@ -22,6 +23,7 @@ public:
     virtual QVariant data(const QModelIndex& index,int role)const override;
     virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
     void setViewsContainer(const ViewsContainer& viewsContainer);
+    ViewsItem getViewsItem(int row)const;
 };
 
 #endif // ANALYZERMODEL_H

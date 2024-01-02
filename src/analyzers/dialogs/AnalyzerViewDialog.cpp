@@ -2,6 +2,7 @@
 #include "analyzers/AnalyzerModel.h"
 #include "analyzers/AnalyzerStorage.h"
 #include "analyzers/dialogs/AnalyzerAddDialog.h"
+#include "analyzers/dialogs/AnalyzerEditDialog.h"
 
 #include <QFrame>
 #include <QString>
@@ -76,7 +77,9 @@ void AnalyzerViewDialog::editSlot()
     const auto selectionModel {analyzersViewPtr_->selectionModel()->selectedRows()};
     if(!selectionModel.isEmpty()){
         const int selectedRow {selectionModel.at(0).row()};
-        emit editSignal(selectedRow);
+        const ViewsItem viewsItem {analyzerModelPtr_->getViewsItem(selectedRow)};
+        AnalyzerEditDialog editDialog {analyzerStorage_,viewsItem,this};
+        editDialog.exec();
     }
 }
 

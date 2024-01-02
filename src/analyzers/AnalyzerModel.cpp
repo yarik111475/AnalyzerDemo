@@ -76,3 +76,11 @@ void AnalyzerModel::setViewsContainer(const ViewsContainer &viewsContainer)
     viewsContainer_.assign(viewsContainer.begin(),viewsContainer.end());
     endResetModel();
 }
+
+ViewsItem AnalyzerModel::getViewsItem(int row) const
+{
+    if(row >= viewsContainer_.size()){
+        return ViewsItem();
+    }
+    return viewsContainer_.at(row);
+}
