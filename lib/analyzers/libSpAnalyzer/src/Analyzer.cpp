@@ -1,16 +1,18 @@
 #include "Analyzer.h"
+#include <QLabel>
+#include <QWidget>
 
-void Analyzer::handle(const QJsonObject &paramsObject)
+QWidget *Analyzer::standardWidget()
+{
+    return new QLabel("SpAnalyzer");
+}
+
+QWidget *Analyzer::extendedWidget()
 {
 
 }
 
-QWidget *Analyzer::settingsWidget(const QJsonObject &paramsObject)
-{
-
-}
-
-QDialog *Analyzer::settingsDialog(const QJsonObject &paramsObject)
+void Analyzer::handle()
 {
 
 }

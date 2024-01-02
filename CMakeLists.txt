@@ -32,7 +32,7 @@ set(LINK_LIBRARIES
 
 #libraries
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/lib/libCore)
-#add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/lib/analyzers/libSpAnalyzer)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/lib/analyzers/libSpAnalyzer)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/lib/analyzers/libTcpAnalyzer)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/lib/analyzers/libDbgAnalyzer)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/lib/3rdparty/qwt-6.1.5)

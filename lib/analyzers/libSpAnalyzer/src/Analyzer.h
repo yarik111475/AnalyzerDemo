@@ -1,6 +1,5 @@
 #ifndef ANALYZER_H
 #define ANALYZER_H
-
 #include "analyzers/IAnalyzer.h"
 
 class Analyzer : public IAnalyzer
@@ -8,17 +7,18 @@ class Analyzer : public IAnalyzer
 public:
     explicit Analyzer()=default;
     virtual ~Analyzer()=default;
-    virtual void handle(const QJsonObject& paramsObject)override;
-    virtual QWidget* settingsWidget(const QJsonObject& paramsObject)override;
-    virtual QDialog* settingsDialog(const QJsonObject& paramsObject)override;
+
+    virtual QWidget* standardWidget()override;
+    virtual QWidget* extendedWidget()override;
+    virtual void handle()override;
 };
 
-const char* makeType()
+const char* createType()
 {
     return "SpAnalyzer";
 }
 
-IAnalyzer* makeAnalyzer(const QJsonObject& paramsObject)
+IAnalyzer* createAnalyzer()
 {
     return new Analyzer();
 }
