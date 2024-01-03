@@ -87,9 +87,9 @@ void AnalyzerViewDialog::editSlot()
 
 void AnalyzerViewDialog::removeSlot()
 {
-    const auto selectionModel {analyzersViewPtr_->selectionModel()->selectedRows()};
-    if(!selectionModel.isEmpty()){
-        const int selectedRow {selectionModel.at(0).row()};
+    const auto selectionList {analyzersViewPtr_->selectionModel()->selectedRows()};
+    if(!selectionList.isEmpty()){
+        const int selectedRow {selectionList.at(0).row()};
         emit removeSignal(selectedRow);
     }
 }
