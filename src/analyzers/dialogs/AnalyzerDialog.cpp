@@ -128,14 +128,14 @@ void AnalyzerDialog::analyzersViewSlot()
         const QUuid qUuid {QUuid::createUuid()};
         const QString analyzerId {qUuid.toString(QUuid::WithoutBraces)};
         const bool addOk {analyzerStorage_.addInstance(analyzerId,analyzerType,analyzerName)};
-        if(addOk){
-            const ViewsContainer containerAfter {analyzerStorage_.getViews()};
-            analyzerModelPtr_->setViewsContainer(containerAfter);
+        if(addOk){ 
             const auto instancePtr {analyzerStorage_.getInstance(analyzerId)};
             if(instancePtr){
                 QWidget* standardWidgetPtr {instancePtr->standardWidget()};
                 stackedWidgetPtr_->addWidget(standardWidgetPtr);
             }
+            const ViewsContainer container {analyzerStorage_.getViews()};
+            analyzerModelPtr_->setViewsContainer(container);
         }
     });
     QObject::connect(&viewDialog,&AnalyzerViewDialog::editSignal,
@@ -147,13 +147,13 @@ void AnalyzerDialog::analyzersViewSlot()
                 stackedWidgetPtr_->removeWidget(standardWidgetPtr);
                 standardWidgetPtr->deleteLater();
             }
-            const ViewsContainer containerAfter {analyzerStorage_.getViews()};
-            analyzerModelPtr_->setViewsContainer(containerAfter);
             const auto instancePtr {analyzerStorage_.getInstance(analyzerId)};
             if(instancePtr){
                 QWidget* standardWidgetPtr {instancePtr->standardWidget()};
-                stackedWidgetPtr_->insertWidget(selectedRow,standardWidgetPtr);
+                stackedWidgetPtr_->addWidget(standardWidgetPtr);
             }
+            const ViewsContainer container {analyzerStorage_.getViews()};
+            analyzerModelPtr_->setViewsContainer(container);
         }
     });
     viewDialog.exec();
@@ -168,7 +168,7 @@ void AnalyzerDialog::modelResetSlot()
 {
     analyzersComboBoxPtr_->setModel(analyzerModelPtr_);
     analyzersComboBoxPtr_->setCurrentIndex(0);
-    resetSettingsWidget(analyzersComboBoxPtr_->currentIndex());
+    resetSettingsWidget(0);
 }
 
 

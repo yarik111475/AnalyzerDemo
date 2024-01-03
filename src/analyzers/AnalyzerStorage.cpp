@@ -51,7 +51,7 @@ AnalyzerStorage::AnalyzerStorage()
                 if(analyzerFunc){
                     std::shared_ptr<IAnalyzer> analyzerPtr {analyzerFunc()};
                     analyzerPtr->initAnalyzer(standardSettings);
-                    instancesContainer_.emplace(analyzerId,analyzerPtr);
+                    instancesContainer_.push_back({analyzerId,analyzerPtr});
                 }
             }
         }
@@ -65,9 +65,12 @@ AnalyzerStorage::~AnalyzerStorage()
 
 Instance AnalyzerStorage::getInstance(const QString &analyzerId)
 {
-    const auto it {instancesContainer_.find(analyzerId)};
-    if(it!=instancesContainer_.end()){
-        return it->second;
+    const auto instanceIt {std::find_if(instancesContainer_.begin(),instancesContainer_.end(),
+                                [&](const std::pair<QString,Instance>& pair){
+          return (pair.first==analyzerId);
+      })};
+    if(instanceIt!=instancesContainer_.end()){
+        return instanceIt->second;
     }
     return nullptr;
 }
@@ -102,9 +105,12 @@ bool AnalyzerStorage::saveInstances(QString &lastError)
 
 bool AnalyzerStorage::removeInstance(const QString &analyzerId)
 {
-    const auto it {instancesContainer_.find(analyzerId)};
-    if(it!=instancesContainer_.end()){
-        instancesContainer_.erase(it);
+    const auto instanceIt {std::find_if(instancesContainer_.begin(),instancesContainer_.end(),
+                                [&](const std::pair<QString,Instance>& pair){
+          return (pair.first==analyzerId);
+      })};
+    if(instanceIt!=instancesContainer_.end()){
+        instancesContainer_.erase(instanceIt);
         return true;
     }
     return false;
@@ -123,7 +129,7 @@ bool AnalyzerStorage::addInstance(const QString &analyzerId, const QString &anal
                 {"type",analyzerType}
             };
             analyzerPtr->initAnalyzer(standardSettings);
-            instancesContainer_.emplace(analyzerId,analyzerPtr);
+            instancesContainer_.push_back({analyzerId,analyzerPtr});
             return true;
         }
     }
@@ -132,7 +138,10 @@ bool AnalyzerStorage::addInstance(const QString &analyzerId, const QString &anal
 
 bool AnalyzerStorage::editInstance(const QString &analyzerId, const QString &analyzerType, const QString &analyzerName)
 {
-    auto instanceIt {instancesContainer_.find(analyzerId)};
+    auto instanceIt {std::find_if(instancesContainer_.begin(),instancesContainer_.end(),
+                                  [&](const std::pair<QString,Instance>& pair){
+            return (pair.first==analyzerId);
+        })};
     if(instanceIt!=instancesContainer_.end()){
         instancesContainer_.erase(instanceIt);
         const auto libraryIt {librariesContainer_.find(analyzerType)};
@@ -146,7 +155,7 @@ bool AnalyzerStorage::editInstance(const QString &analyzerId, const QString &ana
                     {"type",analyzerType}
                 };
                 analyzerPtr->initAnalyzer(standardSettings);
-                instancesContainer_.emplace(analyzerId,analyzerPtr);
+                instancesContainer_.push_back({analyzerId,analyzerPtr});
                 return true;
             }
         }
