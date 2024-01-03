@@ -2,6 +2,7 @@
 #include "analyzers/IAnalyzer.h"
 
 #include <QDir>
+#include <QFile>
 #include <QLibrary>
 #include <QFileInfo>
 #include <QSettings>
@@ -36,8 +37,8 @@ AnalyzerStorage::AnalyzerStorage()
     const auto settingsPath {QStringLiteral("%1/%2/%3").arg(homeDir,appDir_,settingsFilename_)};
     QSettings settings {settingsPath,QSettings::IniFormat};
 
-    const auto analyzersIdList {settings.value("analyzers").toStringList()};
-    std::for_each(analyzersIdList.begin(),analyzersIdList.end(),[&](const QString& analyzerId){
+    const auto instancesIdList {settings.value("analyzers").toStringList()};
+    std::for_each(instancesIdList.begin(),instancesIdList.end(),[&](const QString& analyzerId){
         settings.beginGroup(analyzerId);
         {
             const QJsonObject standardSettings {QJsonDocument::fromJson(settings.value("params").toByteArray()).object()};
@@ -60,10 +61,9 @@ AnalyzerStorage::AnalyzerStorage()
 
 AnalyzerStorage::~AnalyzerStorage()
 {
-
 }
 
-Instance AnalyzerStorage::getAnalyzerInstance(const QString &analyzerId)
+Instance AnalyzerStorage::getInstance(const QString &analyzerId)
 {
     const auto it {instancesContainer_.find(analyzerId)};
     if(it!=instancesContainer_.end()){
@@ -72,7 +72,35 @@ Instance AnalyzerStorage::getAnalyzerInstance(const QString &analyzerId)
     return nullptr;
 }
 
-bool AnalyzerStorage::removeAnalyzerInstance(const QString &analyzerId)
+bool AnalyzerStorage::saveInstances(QString &lastError)
+{
+#ifdef Q_OS_WIN
+    const QString homeDir=qgetenv("USERPROFILE");
+#endif
+#ifdef Q_OS_LINUX
+    const QString homeDir {qgetenv("HOME")};
+#endif
+    const auto settingsPath {QStringLiteral("%1/%2/%3").arg(homeDir,appDir_,settingsFilename_)};
+    QFile{settingsPath}.remove();
+    QSettings settings {settingsPath,QSettings::IniFormat};
+    QStringList instancesIdList {};
+    std::transform(qAsConst(instancesContainer_).begin(),qAsConst(instancesContainer_).end(),std::back_inserter(instancesIdList),
+                   [&](const std::pair<QString,Instance>& pair){
+        return pair.first;
+    });
+    settings.setValue("analyzers",instancesIdList);
+    std::for_each(qAsConst(instancesContainer_).begin(),qAsConst(instancesContainer_).end(),
+                  [&](const std::pair<QString,Instance>& pair){
+        settings.beginGroup(pair.first);
+        {
+            settings.setValue("params",QJsonDocument(pair.second->standardSettings()).toJson(QJsonDocument::Compact));
+        }
+        settings.endGroup();
+    });
+    return true;
+}
+
+bool AnalyzerStorage::removeInstance(const QString &analyzerId)
 {
     const auto it {instancesContainer_.find(analyzerId)};
     if(it!=instancesContainer_.end()){
@@ -82,7 +110,7 @@ bool AnalyzerStorage::removeAnalyzerInstance(const QString &analyzerId)
     return false;
 }
 
-bool AnalyzerStorage::addAnalyzerInstance(const QString &analyzerId, const QString &analyzerType, const QString &analyzerName)
+bool AnalyzerStorage::addInstance(const QString &analyzerId, const QString &analyzerType, const QString &analyzerName)
 {
     const auto libraryIt {librariesContainer_.find(analyzerType)};
     if(libraryIt!=librariesContainer_.end()){
@@ -102,7 +130,7 @@ bool AnalyzerStorage::addAnalyzerInstance(const QString &analyzerId, const QStri
     return false;
 }
 
-bool AnalyzerStorage::editAnalyzerInstance(const QString &analyzerId, const QString &analyzerType, const QString &analyzerName)
+bool AnalyzerStorage::editInstance(const QString &analyzerId, const QString &analyzerType, const QString &analyzerName)
 {
     auto instanceIt {instancesContainer_.find(analyzerId)};
     if(instanceIt!=instancesContainer_.end()){
@@ -126,7 +154,7 @@ bool AnalyzerStorage::editAnalyzerInstance(const QString &analyzerId, const QStr
     return false;
 }
 
-TypesContainer AnalyzerStorage::getAnalyserTypes() const
+TypesContainer AnalyzerStorage::getTypes() const
 {
     TypesContainer typesContainer {};
     typesContainer.reserve(librariesContainer_.size());
@@ -137,7 +165,7 @@ TypesContainer AnalyzerStorage::getAnalyserTypes() const
     return typesContainer;
 }
 
-ViewsContainer AnalyzerStorage::getAnalyzerViews() const
+ViewsContainer AnalyzerStorage::getViews() const
 {
     ViewsContainer viewsContainer {};
     viewsContainer.reserve(instancesContainer_.size());
@@ -152,7 +180,7 @@ ViewsContainer AnalyzerStorage::getAnalyzerViews() const
     return viewsContainer;
 }
 
-InstancesContainer AnalyzerStorage::getAnalyzerInstances() const
+InstancesContainer AnalyzerStorage::getInstances() const
 {
     return instancesContainer_;
 }

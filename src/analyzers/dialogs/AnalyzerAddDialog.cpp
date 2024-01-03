@@ -18,7 +18,7 @@ AnalyzerAddDialog::AnalyzerAddDialog(AnalyzerStorage &analyzerStorage, QWidget *
       typesComboBoxPtr_{new QComboBox},
       nameLineEditPtr_{new QLineEdit}
 {
-    const auto typesContainer {analyzerStorage_.getAnalyserTypes()};
+    const auto typesContainer {analyzerStorage_.getTypes()};
     QStringList itemsList {};
     std::transform(typesContainer.begin(),typesContainer.end(),std::back_inserter(itemsList),
                    [](const QString& item){

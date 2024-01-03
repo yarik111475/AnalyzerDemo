@@ -20,7 +20,7 @@ AnalyzerEditDialog::AnalyzerEditDialog(AnalyzerStorage &analyzerStorage, const V
       viewsItem_{viewsItem},
       selectedRow_{selectedRow}
 {
-    const auto typesContainer {analyzerStorage_.getAnalyserTypes()};
+    const auto typesContainer {analyzerStorage_.getTypes()};
     QStringList itemsList {};
     std::transform(typesContainer.begin(),typesContainer.end(),std::back_inserter(itemsList),
                    [](const QString& item){

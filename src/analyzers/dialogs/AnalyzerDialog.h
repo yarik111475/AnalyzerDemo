@@ -23,12 +23,12 @@ private:
     AnalyzerModel* analyzerModelPtr_ {nullptr};
     AnalyzerStorage& analyzerStorage_;
 
-    QComboBox* analyzersComboBoxPtr_ {nullptr};
+    QComboBox* analyzersComboBoxPtr_     {nullptr};
     QPushButton* analyzersViewButtonPtr_ {nullptr};
-    QLineEdit* matrixLineEditPtr_                {nullptr};
-    QPushButton* matrixAddButtonPtr_      {nullptr};
-    QVBoxLayout* settingsVBoxLayoutPtr_ {nullptr};
-    QStackedWidget* stackedWidgetPtr_     {nullptr};
+    QLineEdit* matrixLineEditPtr_        {nullptr};
+    QPushButton* matrixAddButtonPtr_     {nullptr};
+    QVBoxLayout* settingsVBoxLayoutPtr_  {nullptr};
+    QStackedWidget* stackedWidgetPtr_    {nullptr};
     void resetSettingsWidget(int index);
 public:
     explicit AnalyzerDialog(QWidget *parent = nullptr);

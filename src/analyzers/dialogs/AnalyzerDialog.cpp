@@ -63,6 +63,8 @@ AnalyzerDialog::AnalyzerDialog(QWidget *parent)
 
     QPushButton* saveButtonPtr {new QPushButton(QObject::tr("Save"))};
     QObject::connect(saveButtonPtr,&QPushButton::clicked,[&](){
+        QString lastError {};
+        analyzerStorage_.saveInstances(lastError);
         accept();
     });
     QPushButton* cancelButtonPtr {new QPushButton(QObject::tr("Cancel"))};
@@ -85,7 +87,7 @@ AnalyzerDialog::AnalyzerDialog(QWidget *parent)
         resetSettingsWidget(analyzersComboBoxPtr_->currentIndex());
     });
 
-    const ViewsContainer viewsContainer {analyzerStorage_.getAnalyzerViews()};
+    const ViewsContainer viewsContainer {analyzerStorage_.getViews()};
     QObject::connect(analyzerModelPtr_,&QAbstractItemModel::modelReset,
                      this,&AnalyzerDialog::modelResetSlot);
     analyzerModelPtr_->setViewsContainer(viewsContainer);
@@ -93,7 +95,7 @@ AnalyzerDialog::AnalyzerDialog(QWidget *parent)
     std::for_each(viewsContainer.begin(),viewsContainer.end(),
                   [&](const std::tuple<QString,QString,QString,QString>& dataTuple){
         const QString analyzerId {std::get<3>(dataTuple)};
-        const auto analyzerPtr {analyzerStorage_.getAnalyzerInstance(analyzerId)};
+        const auto analyzerPtr {analyzerStorage_.getInstance(analyzerId)};
         if(analyzerPtr){
             stackedWidgetPtr_->addWidget(analyzerPtr->standardWidget());
         }
@@ -108,16 +110,16 @@ void AnalyzerDialog::analyzersViewSlot()
     AnalyzerViewDialog viewDialog(analyzerModelPtr_,analyzerStorage_,this);
     QObject::connect(&viewDialog,&AnalyzerViewDialog::removeSignal,
                      [this](int selectedRow){
-        const ViewsContainer containerBefore {analyzerStorage_.getAnalyzerViews()};
+        const ViewsContainer containerBefore {analyzerStorage_.getViews()};
         const QString analyzerId {std::get<3>(containerBefore.at(selectedRow))};
-        const bool removeOk {analyzerStorage_.removeAnalyzerInstance(analyzerId)};
+        const bool removeOk {analyzerStorage_.removeInstance(analyzerId)};
         if(removeOk){
             QWidget* standardWidgetPtr {stackedWidgetPtr_->widget(selectedRow)};
             if(standardWidgetPtr){
                 stackedWidgetPtr_->removeWidget(standardWidgetPtr);
                 standardWidgetPtr->deleteLater();
             }
-            const ViewsContainer containerAfter {analyzerStorage_.getAnalyzerViews()};
+            const ViewsContainer containerAfter {analyzerStorage_.getViews()};
             analyzerModelPtr_->setViewsContainer(containerAfter);
         }
     });
@@ -125,11 +127,11 @@ void AnalyzerDialog::analyzersViewSlot()
                      [this](const QString& analyzerType,const QString& analyzerName){
         const QUuid qUuid {QUuid::createUuid()};
         const QString analyzerId {qUuid.toString(QUuid::WithoutBraces)};
-        const bool addOk {analyzerStorage_.addAnalyzerInstance(analyzerId,analyzerType,analyzerName)};
+        const bool addOk {analyzerStorage_.addInstance(analyzerId,analyzerType,analyzerName)};
         if(addOk){
-            const ViewsContainer containerAfter {analyzerStorage_.getAnalyzerViews()};
+            const ViewsContainer containerAfter {analyzerStorage_.getViews()};
             analyzerModelPtr_->setViewsContainer(containerAfter);
-            const auto instancePtr {analyzerStorage_.getAnalyzerInstance(analyzerId)};
+            const auto instancePtr {analyzerStorage_.getInstance(analyzerId)};
             if(instancePtr){
                 QWidget* standardWidgetPtr {instancePtr->standardWidget()};
                 stackedWidgetPtr_->addWidget(standardWidgetPtr);
@@ -138,16 +140,16 @@ void AnalyzerDialog::analyzersViewSlot()
     });
     QObject::connect(&viewDialog,&AnalyzerViewDialog::editSignal,
                      [this](const QString& analyzerId,const QString& analyzerType,const QString& analyzerName,int selectedRow){
-        const bool editOk {analyzerStorage_.editAnalyzerInstance(analyzerId,analyzerType,analyzerName)};
+        const bool editOk {analyzerStorage_.editInstance(analyzerId,analyzerType,analyzerName)};
         if(editOk){
             QWidget* standardWidgetPtr {stackedWidgetPtr_->widget(selectedRow)};
             if(standardWidgetPtr){
                 stackedWidgetPtr_->removeWidget(standardWidgetPtr);
                 standardWidgetPtr->deleteLater();
             }
-            const ViewsContainer containerAfter {analyzerStorage_.getAnalyzerViews()};
+            const ViewsContainer containerAfter {analyzerStorage_.getViews()};
             analyzerModelPtr_->setViewsContainer(containerAfter);
-            const auto instancePtr {analyzerStorage_.getAnalyzerInstance(analyzerId)};
+            const auto instancePtr {analyzerStorage_.getInstance(analyzerId)};
             if(instancePtr){
                 QWidget* standardWidgetPtr {instancePtr->standardWidget()};
                 stackedWidgetPtr_->insertWidget(selectedRow,standardWidgetPtr);

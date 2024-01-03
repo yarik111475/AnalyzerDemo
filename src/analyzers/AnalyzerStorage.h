@@ -42,14 +42,16 @@ public:
     AnalyzerStorage& operator=(const AnalyzerStorage& other)=delete;
     ~AnalyzerStorage();
 
-    Instance getAnalyzerInstance(const QString& analyzerId);
-    bool removeAnalyzerInstance(const QString& analyzerId);
-    bool addAnalyzerInstance(const QString& analyzerId,const QString& analyzerType,const QString& analyzerName);
-    bool editAnalyzerInstance(const QString& analyzerId,const QString& analyzerType,const QString& analyzerName);
 
-    TypesContainer getAnalyserTypes()const;
-    ViewsContainer getAnalyzerViews()const;
-    InstancesContainer getAnalyzerInstances()const;
+    Instance getInstance(const QString& analyzerId);
+    bool saveInstances(QString& lastError);
+    bool removeInstance(const QString& analyzerId);
+    bool addInstance(const QString& analyzerId,const QString& analyzerType,const QString& analyzerName);
+    bool editInstance(const QString& analyzerId,const QString& analyzerType,const QString& analyzerName);
+
+    TypesContainer getTypes()const;
+    ViewsContainer getViews()const;
+    InstancesContainer getInstances()const;
 };
 
 #endif // ANALYZERSTORAGE_H
