@@ -6,7 +6,7 @@
 class QLineEdit;
 class QComboBox;
 class AnalyzerStorage;
-typedef std::tuple<QString,QString,QString,QString> ViewsItem;
+using ViewsItem=std::tuple<QString,QString,QString,QString>;
 
 class AnalyzerEditDialog : public QDialog
 {

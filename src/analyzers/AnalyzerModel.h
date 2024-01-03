@@ -6,8 +6,8 @@
 #include <vector>
 #include <tuple>
 
-typedef std::tuple<QString,QString,QString,QString> ViewsItem;
-typedef std::vector<std::tuple<QString,QString,QString,QString>> ViewsContainer;
+using ViewsItem=std::tuple<QString,QString,QString,QString>;
+using ViewsContainer=std::vector<std::tuple<QString,QString,QString,QString>>;
 
 class AnalyzerModel : public QAbstractTableModel
 {
