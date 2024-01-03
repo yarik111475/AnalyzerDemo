@@ -16,11 +16,12 @@ private:
     QComboBox* typesComboBoxPtr_ {nullptr};
     QLineEdit* nameLineEditPtr_  {nullptr};
     ViewsItem viewsItem_;
+    int selectedRow_ {};
 public:
-    explicit AnalyzerEditDialog(AnalyzerStorage& analyzerStorage,const ViewsItem& viewsItem,QWidget* parent=nullptr);
+    explicit AnalyzerEditDialog(AnalyzerStorage& analyzerStorage,const ViewsItem& viewsItem,int selectedRow,QWidget* parent=nullptr);
     virtual ~AnalyzerEditDialog()=default;
 signals:
-    void editSignal(const QString& analyzerId,const QString& analyzerName,const QString& analyzerType);
+    void editSignal(const QString& analyzerId,const QString& analyzerType,const QString& analyzerName,int selectedRow);
 };
 
 #endif // ANALYZEREDITDIALOG_H

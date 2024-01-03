@@ -12,12 +12,13 @@
 #include <QMessageBox>
 #include <algorithm>
 
-AnalyzerEditDialog::AnalyzerEditDialog(AnalyzerStorage &analyzerStorage, const ViewsItem &viewsItem, QWidget *parent)
+AnalyzerEditDialog::AnalyzerEditDialog(AnalyzerStorage &analyzerStorage, const ViewsItem &viewsItem, int selectedRow, QWidget *parent)
     :QDialog{parent},
       analyzerStorage_{analyzerStorage},
       typesComboBoxPtr_{new QComboBox},
       nameLineEditPtr_{new QLineEdit},
-      viewsItem_{viewsItem}
+      viewsItem_{viewsItem},
+      selectedRow_{selectedRow}
 {
     const auto typesContainer {analyzerStorage_.getAnalyserTypes()};
     QStringList itemsList {};
@@ -48,7 +49,7 @@ AnalyzerEditDialog::AnalyzerEditDialog(AnalyzerStorage &analyzerStorage, const V
                 QMessageBox::warning(this,QObject::tr("Warning"),QObject::tr("Analyzer is running.\nStop it before editing!"));
                 return;
             }
-            emit editSignal(analyzerId,analyzerName,analyzerName);
+            emit editSignal(analyzerId,analyzerType,analyzerName,selectedRow_);
         }
         accept();
     });

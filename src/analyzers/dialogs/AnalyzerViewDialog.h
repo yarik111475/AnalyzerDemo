@@ -25,7 +25,7 @@ private slots:
 signals:
     void removeSignal(int selectedRow);
     void addSignal(const QString& analyzerType,const QString& analyzerName);
-    void editSignal(const QString& analyzerId,const QString& analyzerType,const QString& analyzerName);
+    void editSignal(const QString& analyzerId,const QString& analyzerType,const QString& analyzerName, int selectedRow);
 };
 
 #endif // ANALYZERADDDIALOG_H

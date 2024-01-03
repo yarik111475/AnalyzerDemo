@@ -84,10 +84,10 @@ bool AnalyzerStorage::removeAnalyzerInstance(const QString &analyzerId)
 
 bool AnalyzerStorage::addAnalyzerInstance(const QString &analyzerId, const QString &analyzerType, const QString &analyzerName)
 {
-    const auto it {librariesContainer_.find(analyzerType)};
-    if(it!=librariesContainer_.end()){
-        std::shared_ptr<QLibrary> libPtr {it->second};
-        AnalyzerFunc analyzerFunc {(AnalyzerFunc)it->second->resolve(qPrintable(createResolveTag_))};
+    const auto libraryIt {librariesContainer_.find(analyzerType)};
+    if(libraryIt!=librariesContainer_.end()){
+        std::shared_ptr<QLibrary> libPtr {libraryIt->second};
+        AnalyzerFunc analyzerFunc {(AnalyzerFunc)libraryIt->second->resolve(qPrintable(createResolveTag_))};
         if(analyzerFunc){
             std::shared_ptr<IAnalyzer> analyzerPtr {analyzerFunc()};
             const QJsonObject standardSettings {
@@ -104,7 +104,26 @@ bool AnalyzerStorage::addAnalyzerInstance(const QString &analyzerId, const QStri
 
 bool AnalyzerStorage::editAnalyzerInstance(const QString &analyzerId, const QString &analyzerType, const QString &analyzerName)
 {
-
+    auto instanceIt {instancesContainer_.find(analyzerId)};
+    if(instanceIt!=instancesContainer_.end()){
+        instancesContainer_.erase(instanceIt);
+        const auto libraryIt {librariesContainer_.find(analyzerType)};
+        if(libraryIt!=librariesContainer_.end()){
+            std::shared_ptr<QLibrary> libPtr {libraryIt->second};
+            AnalyzerFunc analyzerFunc {(AnalyzerFunc)libraryIt->second->resolve(qPrintable(createResolveTag_))};
+            if(analyzerFunc){
+                std::shared_ptr<IAnalyzer> analyzerPtr {analyzerFunc()};
+                const QJsonObject standardSettings {
+                    {"name",analyzerName},
+                    {"type",analyzerType}
+                };
+                analyzerPtr->initAnalyzer(standardSettings);
+                instancesContainer_.emplace(analyzerId,analyzerPtr);
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 TypesContainer AnalyzerStorage::getAnalyserTypes() const

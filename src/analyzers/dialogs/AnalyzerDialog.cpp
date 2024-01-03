@@ -137,15 +137,20 @@ void AnalyzerDialog::analyzersViewSlot()
         }
     });
     QObject::connect(&viewDialog,&AnalyzerViewDialog::editSignal,
-                     [this](const QString& analyzerId,const QString& analyzerType,const QString& analyzerName){
+                     [this](const QString& analyzerId,const QString& analyzerType,const QString& analyzerName,int selectedRow){
         const bool editOk {analyzerStorage_.editAnalyzerInstance(analyzerId,analyzerType,analyzerName)};
         if(editOk){
+            QWidget* standardWidgetPtr {stackedWidgetPtr_->widget(selectedRow)};
+            if(standardWidgetPtr){
+                stackedWidgetPtr_->removeWidget(standardWidgetPtr);
+                standardWidgetPtr->deleteLater();
+            }
             const ViewsContainer containerAfter {analyzerStorage_.getAnalyzerViews()};
             analyzerModelPtr_->setViewsContainer(containerAfter);
             const auto instancePtr {analyzerStorage_.getAnalyzerInstance(analyzerId)};
             if(instancePtr){
                 QWidget* standardWidgetPtr {instancePtr->standardWidget()};
-                stackedWidgetPtr_->addWidget(standardWidgetPtr);
+                stackedWidgetPtr_->insertWidget(selectedRow,standardWidgetPtr);
             }
         }
     });

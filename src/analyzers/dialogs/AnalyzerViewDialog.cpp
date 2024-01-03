@@ -78,7 +78,7 @@ void AnalyzerViewDialog::editSlot()
     if(!selectionModel.isEmpty()){
         const int selectedRow {selectionModel.at(0).row()};
         const ViewsItem viewsItem {analyzerModelPtr_->getViewsItem(selectedRow)};
-        AnalyzerEditDialog editDialog {analyzerStorage_,viewsItem,this};
+        AnalyzerEditDialog editDialog {analyzerStorage_,viewsItem,selectedRow,this};
         QObject::connect(&editDialog,&AnalyzerEditDialog::editSignal,
                          this,&AnalyzerViewDialog::editSignal);
         editDialog.exec();
