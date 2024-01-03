@@ -38,7 +38,9 @@ AnalyzerAddDialog::AnalyzerAddDialog(AnalyzerStorage &analyzerStorage, QWidget *
             QMessageBox::warning(this,QObject::tr("Warning"),QObject::tr("You must enter analyzer name!"));
             return;
         }
-        emit addSignal(typesComboBoxPtr_->currentText(),nameLineEditPtr_->text());
+        const QString analyzerType {typesComboBoxPtr_->currentText()};
+        const QString analyzerName {nameLineEditPtr_->text()};
+        emit addSignal(analyzerType,analyzerName);
         accept();
     });
     QPushButton* cancelButtonPtr {new QPushButton(QObject::tr("Cancel"))};

@@ -102,6 +102,11 @@ bool AnalyzerStorage::addAnalyzerInstance(const QString &analyzerId, const QStri
     return false;
 }
 
+bool AnalyzerStorage::editAnalyzerInstance(const QString &analyzerId, const QString &analyzerType, const QString &analyzerName)
+{
+
+}
+
 TypesContainer AnalyzerStorage::getAnalyserTypes() const
 {
     TypesContainer typesContainer {};

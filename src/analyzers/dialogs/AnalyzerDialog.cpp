@@ -129,7 +129,20 @@ void AnalyzerDialog::analyzersViewSlot()
         if(addOk){
             const ViewsContainer containerAfter {analyzerStorage_.getAnalyzerViews()};
             analyzerModelPtr_->setViewsContainer(containerAfter);
-            auto instancePtr {analyzerStorage_.getAnalyzerInstance(analyzerId)};
+            const auto instancePtr {analyzerStorage_.getAnalyzerInstance(analyzerId)};
+            if(instancePtr){
+                QWidget* standardWidgetPtr {instancePtr->standardWidget()};
+                stackedWidgetPtr_->addWidget(standardWidgetPtr);
+            }
+        }
+    });
+    QObject::connect(&viewDialog,&AnalyzerViewDialog::editSignal,
+                     [this](const QString& analyzerId,const QString& analyzerType,const QString& analyzerName){
+        const bool editOk {analyzerStorage_.editAnalyzerInstance(analyzerId,analyzerType,analyzerName)};
+        if(editOk){
+            const ViewsContainer containerAfter {analyzerStorage_.getAnalyzerViews()};
+            analyzerModelPtr_->setViewsContainer(containerAfter);
+            const auto instancePtr {analyzerStorage_.getAnalyzerInstance(analyzerId)};
             if(instancePtr){
                 QWidget* standardWidgetPtr {instancePtr->standardWidget()};
                 stackedWidgetPtr_->addWidget(standardWidgetPtr);

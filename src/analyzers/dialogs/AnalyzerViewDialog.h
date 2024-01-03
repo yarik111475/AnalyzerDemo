@@ -21,12 +21,11 @@ private slots:
     void addSlot();
     void editSlot();
     void removeSlot();
-    void saveSlot();
 
 signals:
-    void editSignal(int selectedRow);
     void removeSignal(int selectedRow);
     void addSignal(const QString& analyzerType,const QString& analyzerName);
+    void editSignal(const QString& analyzerId,const QString& analyzerType,const QString& analyzerName);
 };
 
 #endif // ANALYZERADDDIALOG_H

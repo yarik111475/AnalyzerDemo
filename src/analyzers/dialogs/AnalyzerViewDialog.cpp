@@ -79,6 +79,8 @@ void AnalyzerViewDialog::editSlot()
         const int selectedRow {selectionModel.at(0).row()};
         const ViewsItem viewsItem {analyzerModelPtr_->getViewsItem(selectedRow)};
         AnalyzerEditDialog editDialog {analyzerStorage_,viewsItem,this};
+        QObject::connect(&editDialog,&AnalyzerEditDialog::editSignal,
+                         this,&AnalyzerViewDialog::editSignal);
         editDialog.exec();
     }
 }
@@ -90,9 +92,4 @@ void AnalyzerViewDialog::removeSlot()
         const int selectedRow {selectionModel.at(0).row()};
         emit removeSignal(selectedRow);
     }
-}
-
-void AnalyzerViewDialog::saveSlot()
-{
-
 }

@@ -45,6 +45,7 @@ public:
     Instance getAnalyzerInstance(const QString& analyzerId);
     bool removeAnalyzerInstance(const QString& analyzerId);
     bool addAnalyzerInstance(const QString& analyzerId,const QString& analyzerType,const QString& analyzerName);
+    bool editAnalyzerInstance(const QString& analyzerId,const QString& analyzerType,const QString& analyzerName);
 
     TypesContainer getAnalyserTypes()const;
     ViewsContainer getAnalyzerViews()const;
