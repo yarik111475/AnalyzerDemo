@@ -29,7 +29,7 @@ AnalyzerStorage::AnalyzerStorage()
     });
 
 #ifdef Q_OS_WIN
-    const QString homeDir=qgetenv("USERPROFILE");
+    const QString homeDir {qgetenv("USERPROFILE")};
 #endif
 #ifdef Q_OS_LINUX
     const QString homeDir {qgetenv("HOME")};
@@ -78,7 +78,7 @@ Instance AnalyzerStorage::getInstance(const QString &analyzerId)
 bool AnalyzerStorage::saveInstances(QString &lastError)
 {
 #ifdef Q_OS_WIN
-    const QString homeDir=qgetenv("USERPROFILE");
+    const QString homeDir {qgetenv("USERPROFILE")};
 #endif
 #ifdef Q_OS_LINUX
     const QString homeDir {qgetenv("HOME")};
