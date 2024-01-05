@@ -1,4 +1,5 @@
 #include "AnalyzerModel.h"
+#include "Defines_p.h"
 
 AnalyzerModel::AnalyzerModel(QObject *parent) : QAbstractTableModel(parent)
 {
@@ -34,13 +35,13 @@ QVariant AnalyzerModel::data(const QModelIndex &index, int role) const
         const auto dataTuple {viewsContainer_.at(row)};
         switch(column){
         case 0:
-            return std::get<0>(dataTuple);//name
+            return std::get<TupleFields::Name>(dataTuple);
         case 1:
-           return std::get<1>(dataTuple);//type
+           return std::get<TupleFields::Type>(dataTuple);
         case 2:
-            return std::get<2>(dataTuple);//state
+            return std::get<TupleFields::State>(dataTuple);
         case 3:
-            return std::get<3>(dataTuple);//id
+            return std::get<TupleFields::Id>(dataTuple);
         default:
             return QVariant{};
         }

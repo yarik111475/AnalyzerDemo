@@ -23,10 +23,10 @@ using InstancesContainer=std::vector<std::pair<QString,Instance>>;
 class AnalyzerStorage
 {
 private:
-    const QString settingsFilename_         {"analyzers.ini"};
-    const QString appDir_                          {"spectrumhero"};
-    const QString typeResolveTag_            {"createType"};
-    const QString createResolveTag_         {"createAnalyzer"};
+    const QString settingsFilename_       {"analyzers.ini"};
+    const QString appDir_                 {"spectrumhero"};
+    const QString typeResolveTag_         {"createType"};
+    const QString createResolveTag_       {"createAnalyzer"};
     const QString analyzersLibrariesPath_ {QStringLiteral("%1/../lib/analyzers").arg(qApp->applicationDirPath())};
 
     LibrariesContainer librariesContainer_ {};

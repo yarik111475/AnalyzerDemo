@@ -3,6 +3,7 @@
 #include "analyzers/AnalyzerModel.h"
 #include "analyzers/AnalyzerStorage.h"
 #include "analyzers/dialogs/AnalyzerViewDialog.h"
+#include "../Defines_p.h"
 
 #include <QUuid>
 #include <QFrame>
@@ -94,7 +95,7 @@ AnalyzerDialog::AnalyzerDialog(QWidget *parent)
 
     std::for_each(viewsContainer.begin(),viewsContainer.end(),
                   [&](const std::tuple<QString,QString,QString,QString>& dataTuple){
-        const QString analyzerId {std::get<3>(dataTuple)};
+        const QString analyzerId {std::get<TupleFields::Id>(dataTuple)};
         const auto analyzerPtr {analyzerStorage_.getInstance(analyzerId)};
         if(analyzerPtr){
             stackedWidgetPtr_->addWidget(analyzerPtr->standardWidget());
@@ -111,7 +112,7 @@ void AnalyzerDialog::analyzersViewSlot()
     QObject::connect(&viewDialog,&AnalyzerViewDialog::removeSignal,
                      [this](int selectedRow){
         const ViewsContainer containerBefore {analyzerStorage_.getViews()};
-        const QString analyzerId {std::get<3>(containerBefore.at(selectedRow))};
+        const QString analyzerId {std::get<TupleFields::Id>(containerBefore.at(selectedRow))};
         const bool removeOk {analyzerStorage_.removeInstance(analyzerId)};
         if(removeOk){
             QWidget* standardWidgetPtr {stackedWidgetPtr_->widget(selectedRow)};

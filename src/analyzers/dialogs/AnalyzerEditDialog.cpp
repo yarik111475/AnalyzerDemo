@@ -1,5 +1,6 @@
 #include "AnalyzerEditDialog.h"
 #include "analyzers/AnalyzerStorage.h"
+#include "../Defines_p.h"
 
 #include <QLabel>
 #include <QLineEdit>
@@ -40,11 +41,11 @@ AnalyzerEditDialog::AnalyzerEditDialog(AnalyzerStorage &analyzerStorage, const V
             QMessageBox::warning(this,QObject::tr("Warning"),QObject::tr("You must enter analyzer name!"));
             return;
         }
-        const QString analyzerId {std::get<3>(viewsItem_)};
+        const QString analyzerId {std::get<TupleFields::Id>(viewsItem_)};
         const QString analyzerName {nameLineEditPtr_->text()};
         const QString analyzerType {typesComboBoxPtr_->currentText()};
-        const QString analyzerState {std::get<2>(viewsItem_)};
-        if(std::get<0>(viewsItem_)!=analyzerName || std::get<1>(viewsItem_)!=analyzerType){
+        const QString analyzerState {std::get<TupleFields::State>(viewsItem_)};
+        if(std::get<TupleFields::Name>(viewsItem_)!=analyzerName || std::get<TupleFields::Type>(viewsItem_)!=analyzerType){
             if(analyzerState=="Enabled"){
                 QMessageBox::warning(this,QObject::tr("Warning"),QObject::tr("Analyzer is running.\nStop it before editing!"));
                 return;
@@ -69,8 +70,8 @@ AnalyzerEditDialog::AnalyzerEditDialog(AnalyzerStorage &analyzerStorage, const V
     mainVBoxLayoutPtr->addLayout(btnHBoxLayoutPtr,0);
     setLayout(mainVBoxLayoutPtr);
 
-    const QString analyzerName {std::get<0>(viewsItem)};
-    const QString analyzerType {std::get<1>(viewsItem)};
+    const QString analyzerName {std::get<TupleFields::Name>(viewsItem)};
+    const QString analyzerType {std::get<TupleFields::Type>(viewsItem)};
 
     typesComboBoxPtr_->setCurrentText(analyzerType);
     nameLineEditPtr_->setText(analyzerName);

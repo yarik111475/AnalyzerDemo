@@ -66,7 +66,7 @@ AnalyzerStorage::~AnalyzerStorage()
 Instance AnalyzerStorage::getInstance(const QString &analyzerId)
 {
     const auto instanceIt {std::find_if(instancesContainer_.begin(),instancesContainer_.end(),
-                                [&](const std::pair<QString,Instance>& pair){
+                                [&](const std::pair<const QString,Instance>& pair){
           return (pair.first==analyzerId);
       })};
     if(instanceIt!=instancesContainer_.end()){
@@ -88,7 +88,7 @@ bool AnalyzerStorage::saveInstances(QString &lastError)
     QSettings settings {settingsPath,QSettings::IniFormat};
     QStringList instancesIdList {};
     std::transform(qAsConst(instancesContainer_).begin(),qAsConst(instancesContainer_).end(),std::back_inserter(instancesIdList),
-                   [&](const std::pair<QString,Instance>& pair){
+                   [&](const std::pair<const QString,Instance>& pair){
         return pair.first;
     });
     settings.setValue("analyzers",instancesIdList);
@@ -106,7 +106,7 @@ bool AnalyzerStorage::saveInstances(QString &lastError)
 bool AnalyzerStorage::removeInstance(const QString &analyzerId)
 {
     const auto instanceIt {std::find_if(instancesContainer_.begin(),instancesContainer_.end(),
-                                [&](const std::pair<QString,Instance>& pair){
+                                [&](const std::pair<const QString,Instance>& pair){
           return (pair.first==analyzerId);
       })};
     if(instanceIt!=instancesContainer_.end()){
@@ -168,7 +168,7 @@ TypesContainer AnalyzerStorage::getTypes() const
     TypesContainer typesContainer {};
     typesContainer.reserve(librariesContainer_.size());
     std::transform(librariesContainer_.begin(),librariesContainer_.end(),std::back_inserter(typesContainer),
-                   [](const std::pair<QString,std::shared_ptr<QLibrary>>& pair){
+                   [](const std::pair<const QString,std::shared_ptr<QLibrary>>& pair){
         return pair.first;
     });
     return typesContainer;
@@ -179,7 +179,7 @@ ViewsContainer AnalyzerStorage::getViews() const
     ViewsContainer viewsContainer {};
     viewsContainer.reserve(instancesContainer_.size());
     std::transform(instancesContainer_.begin(),instancesContainer_.end(),std::back_inserter(viewsContainer),
-                   [](const std::pair<QString,Instance>& pair){
+                   [](const std::pair<const QString,Instance>& pair){
         const QJsonObject standardSettings {pair.second->standardSettings()};
         const QString analyzerName {standardSettings.value("name").toString()};
         const QString analyzerType {standardSettings.value("type").toString()};
