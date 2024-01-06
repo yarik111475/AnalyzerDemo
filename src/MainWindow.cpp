@@ -21,6 +21,11 @@ void MainWindow::makeMenu()
     updateAnalyzersActions();
 }
 
+void MainWindow::startAnalyzer(const QString &analyzerId)
+{
+    qDebug("Start analyzer: %s",qPrintable(analyzerId));
+}
+
 void MainWindow::updateAnalyzersActions()
 {
     analyzersMenuPtr_->clear();
@@ -36,8 +41,14 @@ void MainWindow::updateAnalyzersActions()
     const auto viewsContainer {analyzerStorage_.getViews()};
     std::for_each(viewsContainer.begin(),viewsContainer.end(),
                   [&](const std::tuple<QString,QString,QString,QString>& dataTuple){
+        const auto analyzerId {std::get<TupleFields::Id>(dataTuple)};
         const auto analyzerName {std::get<TupleFields::Name>(dataTuple)};
-        analyzersMenuPtr_->addAction(analyzerName);
+
+        QMenu* startMenuPtr {new QMenu(analyzerName)};
+        startMenuPtr->addAction(QObject::tr("Start"),[=](){
+            startAnalyzer(analyzerId);
+        });
+        analyzersMenuPtr_->addMenu(startMenuPtr);
     });
 }
 

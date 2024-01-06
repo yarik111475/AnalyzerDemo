@@ -24,6 +24,7 @@ private:
     std::map<QString,QString> analyzersMap_;
 
     void makeMenu();
+    void startAnalyzer(const QString& analyzerId);
     void updateAnalyzersActions();
 public:
     explicit MainWindow(std::shared_ptr<QSettings> appSettingsPtr,QWidget *parent = nullptr);
