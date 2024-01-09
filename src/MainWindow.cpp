@@ -1,6 +1,6 @@
 #include "MainWindow.h"
-#include "analyzers/AnalyzerStorage.h"
-#include "analyzers/dialogs/AnalyzerDialog.h"
+#include "analyzers/Storage.h"
+#include "analyzers/dialogs/Dialog.h"
 #include "analyzers/Defines_p.h"
 
 #include <QMenu>
@@ -30,7 +30,7 @@ void MainWindow::updateAnalyzersActions()
 {
     analyzersMenuPtr_->clear();
     analyzersMenuPtr_->addAction(QObject::tr("Settings"),[&](){
-        AnalyzerDialog dialog {this};
+        analyzer::Dialog dialog {this};
         QObject::connect(&dialog,&QDialog::finished,
                          [this](){
             updateAnalyzersActions();
@@ -41,8 +41,8 @@ void MainWindow::updateAnalyzersActions()
     const auto viewsContainer {analyzerStorage_.getViews()};
     std::for_each(viewsContainer.begin(),viewsContainer.end(),
                   [&](const std::tuple<QString,QString,QString,QString>& dataTuple){
-        const auto analyzerId {std::get<TupleFields::Id>(dataTuple)};
-        const auto analyzerName {std::get<TupleFields::Name>(dataTuple)};
+        const auto analyzerId {std::get<analyzer::TupleFields::Id>(dataTuple)};
+        const auto analyzerName {std::get<analyzer::TupleFields::Name>(dataTuple)};
 
         QMenu* startMenuPtr {new QMenu(analyzerName)};
         startMenuPtr->addAction(QObject::tr("Start"),[=](){
@@ -56,7 +56,7 @@ MainWindow::MainWindow(std::shared_ptr<QSettings> appSettingsPtr, QWidget *paren
     : QMainWindow(parent),
       analyzersMenuPtr_{new QMenu(QObject::tr("Analyzers"))},
       mdiAreaPtr_{new QMdiArea},
-      analyzerStorage_{AnalyzerStorage::instance()},
+      analyzerStorage_{analyzer::Storage::instance()},
       appSettingsPtr_{appSettingsPtr}
 {
     makeMenu();

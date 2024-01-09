@@ -14,12 +14,16 @@
 #include <string>
 #include <functional>
 
+class QWidget;
+
+namespace analyzer
+{
 enum class State{
     Enabled=1,
     Disabled=0
 };
 
-class QWidget;
+
 class IAnalyzer
 {
 protected:
@@ -47,8 +51,10 @@ public:
     std::function<void(const QString& obj,const QString& msg)> logFunc_ {nullptr};
     std::function<void(const QByteArray& data)> progressFunc_ {nullptr};
 };
+}
+
 
 extern "C" CORE_EXPORT const char* createType();
-extern "C" CORE_EXPORT IAnalyzer* createAnalyzer();
+extern "C" CORE_EXPORT analyzer::IAnalyzer* createAnalyzer();
 
 #endif // IANALYZER_H

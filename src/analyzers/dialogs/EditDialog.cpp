@@ -1,5 +1,6 @@
-#include "AnalyzerAddDialog.h"
-#include "analyzers/AnalyzerStorage.h"
+#include "EditDialog.h"
+#include "analyzers/Storage.h"
+#include "../Defines_p.h"
 
 #include <QLabel>
 #include <QLineEdit>
@@ -12,11 +13,13 @@
 #include <QMessageBox>
 #include <algorithm>
 
-AnalyzerAddDialog::AnalyzerAddDialog(AnalyzerStorage &analyzerStorage, QWidget *parent)
+analyzer::EditDialog::EditDialog(analyzer::Storage &analyzerStorage, const ViewsItem &viewsItem, int selectedRow, QWidget *parent)
     :QDialog{parent},
       analyzerStorage_{analyzerStorage},
       typesComboBoxPtr_{new QComboBox},
-      nameLineEditPtr_{new QLineEdit}
+      nameLineEditPtr_{new QLineEdit},
+      viewsItem_{viewsItem},
+      selectedRow_{selectedRow}
 {
     const auto typesContainer {analyzerStorage_.getTypes()};
     QStringList itemsList {};
@@ -38,9 +41,17 @@ AnalyzerAddDialog::AnalyzerAddDialog(AnalyzerStorage &analyzerStorage, QWidget *
             QMessageBox::warning(this,QObject::tr("Warning"),QObject::tr("You must enter analyzer name!"));
             return;
         }
-        const QString analyzerType {typesComboBoxPtr_->currentText()};
+        const QString analyzerId {std::get<TupleFields::Id>(viewsItem_)};
         const QString analyzerName {nameLineEditPtr_->text()};
-        emit addSignal(analyzerType,analyzerName);
+        const QString analyzerType {typesComboBoxPtr_->currentText()};
+        const QString analyzerState {std::get<TupleFields::State>(viewsItem_)};
+        if(std::get<TupleFields::Name>(viewsItem_)!=analyzerName || std::get<TupleFields::Type>(viewsItem_)!=analyzerType){
+            if(analyzerState=="Enabled"){
+                QMessageBox::warning(this,QObject::tr("Warning"),QObject::tr("Analyzer is running.\nStop it before editing!"));
+                return;
+            }
+            emit editSignal(analyzerId,analyzerType,analyzerName,selectedRow_);
+        }
         accept();
     });
     QPushButton* cancelButtonPtr {new QPushButton(QObject::tr("Cancel"))};
@@ -57,8 +68,14 @@ AnalyzerAddDialog::AnalyzerAddDialog(AnalyzerStorage &analyzerStorage, QWidget *
     QVBoxLayout* mainVBoxLayoutPtr {new QVBoxLayout};
     mainVBoxLayoutPtr->addLayout(formLayoutPtr,5);
     mainVBoxLayoutPtr->addLayout(btnHBoxLayoutPtr,0);
-
     setLayout(mainVBoxLayoutPtr);
+
+    const QString analyzerName {std::get<TupleFields::Name>(viewsItem)};
+    const QString analyzerType {std::get<TupleFields::Type>(viewsItem)};
+
+    typesComboBoxPtr_->setCurrentText(analyzerType);
+    nameLineEditPtr_->setText(analyzerName);
+
     setWindowFlags(Qt::Dialog|Qt::WindowCloseButtonHint);
     setWindowTitle(qApp->applicationName());
 }

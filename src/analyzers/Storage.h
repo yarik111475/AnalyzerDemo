@@ -8,9 +8,10 @@
 #include <tuple>
 #include <memory>
 
-class IAnalyzer;
 class QLibrary;
-
+namespace analyzer
+{
+class IAnalyzer;
 using TypeFunc=const char*(*)();
 using AnalyzerFunc=IAnalyzer*(*)();
 
@@ -20,7 +21,7 @@ using TypesContainer=std::vector<QString>;
 using ViewsContainer=std::vector<std::tuple<QString,QString,QString,QString>>;
 using InstancesContainer=std::vector<std::pair<QString,Instance>>;
 
-class AnalyzerStorage
+class Storage
 {
 private:
     const QString settingsFilename_       {"analyzers.ini"};
@@ -32,15 +33,15 @@ private:
     LibrariesContainer librariesContainer_ {};
     InstancesContainer instancesContainer_;
 
-    explicit AnalyzerStorage();
+    explicit Storage();
 public:
-    static AnalyzerStorage& instance(){
-        static AnalyzerStorage instance_;
+    static Storage& instance(){
+        static Storage instance_;
         return instance_;
     }
-    AnalyzerStorage(const AnalyzerStorage& other)=delete;
-    AnalyzerStorage& operator=(const AnalyzerStorage& other)=delete;
-    ~AnalyzerStorage();
+    Storage(const Storage& other)=delete;
+    Storage& operator=(const Storage& other)=delete;
+    ~Storage();
 
 
     Instance getInstance(const QString& analyzerId);
@@ -53,5 +54,7 @@ public:
     ViewsContainer getViews()const;
     InstancesContainer getInstances()const;
 };
+}
+
 
 #endif // ANALYZERSTORAGE_H

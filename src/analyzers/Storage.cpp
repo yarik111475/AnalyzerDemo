@@ -1,4 +1,4 @@
-#include "AnalyzerStorage.h"
+#include "Storage.h"
 #include "analyzers/IAnalyzer.h"
 
 #include <QDir>
@@ -12,7 +12,7 @@
 #include <QJsonDocument>
 #include <algorithm>
 
-AnalyzerStorage::AnalyzerStorage()
+analyzer::Storage::Storage()
 {
     const QStringList nameFilters {"*.dll","*.so"};
     const auto librariesList {QDir{analyzersLibrariesPath_}.entryInfoList(nameFilters,QDir::Files)};
@@ -59,11 +59,11 @@ AnalyzerStorage::AnalyzerStorage()
     });
 }
 
-AnalyzerStorage::~AnalyzerStorage()
+analyzer::Storage::~Storage()
 {
 }
 
-Instance AnalyzerStorage::getInstance(const QString &analyzerId)
+analyzer::Instance analyzer::Storage::getInstance(const QString &analyzerId)
 {
     const auto instanceIt {std::find_if(instancesContainer_.begin(),instancesContainer_.end(),
                                 [&](const std::pair<const QString,Instance>& pair){
@@ -75,7 +75,7 @@ Instance AnalyzerStorage::getInstance(const QString &analyzerId)
     return nullptr;
 }
 
-bool AnalyzerStorage::saveInstances(QString &lastError)
+bool analyzer::Storage::saveInstances(QString &lastError)
 {
 #ifdef Q_OS_WIN
     const QString homeDir {qgetenv("USERPROFILE")};
@@ -103,7 +103,7 @@ bool AnalyzerStorage::saveInstances(QString &lastError)
     return true;
 }
 
-bool AnalyzerStorage::removeInstance(const QString &analyzerId)
+bool analyzer::Storage::removeInstance(const QString &analyzerId)
 {
     const auto instanceIt {std::find_if(instancesContainer_.begin(),instancesContainer_.end(),
                                 [&](const std::pair<const QString,Instance>& pair){
@@ -116,7 +116,7 @@ bool AnalyzerStorage::removeInstance(const QString &analyzerId)
     return false;
 }
 
-bool AnalyzerStorage::addInstance(const QString &analyzerId, const QString &analyzerType, const QString &analyzerName)
+bool analyzer::Storage::addInstance(const QString &analyzerId, const QString &analyzerType, const QString &analyzerName)
 {
     const auto libraryIt {librariesContainer_.find(analyzerType)};
     if(libraryIt!=librariesContainer_.end()){
@@ -136,7 +136,7 @@ bool AnalyzerStorage::addInstance(const QString &analyzerId, const QString &anal
     return false;
 }
 
-bool AnalyzerStorage::editInstance(const QString &analyzerId, const QString &analyzerType, const QString &analyzerName)
+bool analyzer::Storage::editInstance(const QString &analyzerId, const QString &analyzerType, const QString &analyzerName)
 {
     auto instanceIt {std::find_if(instancesContainer_.begin(),instancesContainer_.end(),
                                   [&](const std::pair<QString,Instance>& pair){
@@ -163,7 +163,7 @@ bool AnalyzerStorage::editInstance(const QString &analyzerId, const QString &ana
     return false;
 }
 
-TypesContainer AnalyzerStorage::getTypes() const
+analyzer::TypesContainer analyzer::Storage::getTypes() const
 {
     TypesContainer typesContainer {};
     typesContainer.reserve(librariesContainer_.size());
@@ -174,7 +174,7 @@ TypesContainer AnalyzerStorage::getTypes() const
     return typesContainer;
 }
 
-ViewsContainer AnalyzerStorage::getViews() const
+analyzer::ViewsContainer analyzer::Storage::getViews() const
 {
     ViewsContainer viewsContainer {};
     viewsContainer.reserve(instancesContainer_.size());
@@ -189,7 +189,7 @@ ViewsContainer AnalyzerStorage::getViews() const
     return viewsContainer;
 }
 
-InstancesContainer AnalyzerStorage::getInstances() const
+analyzer::InstancesContainer analyzer::Storage::getInstances() const
 {
     return instancesContainer_;
 }

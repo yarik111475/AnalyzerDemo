@@ -2,7 +2,7 @@
 #define ANALYZER_H
 #include "analyzers/IAnalyzer.h"
 
-class Analyzer : public IAnalyzer
+class Analyzer : public analyzer::IAnalyzer
 {
 public:
     explicit Analyzer()=default;
@@ -18,7 +18,7 @@ const char* createType()
     return "SpAnalyzer";
 }
 
-IAnalyzer* createAnalyzer()
+analyzer::IAnalyzer* createAnalyzer()
 {
     return new Analyzer();
 }

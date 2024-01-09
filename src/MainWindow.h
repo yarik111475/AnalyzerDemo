@@ -11,15 +11,19 @@ class QMenu;
 class QAction;
 class QSettings;
 class QMdiArea;
-class AnalyzerDialog;
-class AnalyzerStorage;
+
+namespace analyzer
+{
+    class Storage;
+    class Dialog;
+}
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 private:
     QMenu* analyzersMenuPtr_ {nullptr};
     QMdiArea* mdiAreaPtr_ {nullptr};
-    AnalyzerStorage& analyzerStorage_;
+    analyzer::Storage& analyzerStorage_;
     std::shared_ptr<QSettings> appSettingsPtr_ {nullptr};
     std::map<QString,QString> analyzersMap_;
 

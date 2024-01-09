@@ -1,6 +1,8 @@
 #ifndef DEFINES_P_H
 #define DEFINES_P_H
 
+namespace analyzer
+{
 enum TupleFields
 {
     Name,
@@ -8,4 +10,6 @@ enum TupleFields
     State,
     Id
 };
+}
+
 #endif // DEFINES_P_H

@@ -1,11 +1,11 @@
-#include "AnalyzerModel.h"
+#include "Model.h"
 #include "Defines_p.h"
 
-AnalyzerModel::AnalyzerModel(QObject *parent) : QAbstractTableModel(parent)
+analyzer::Model::Model(QObject *parent) : QAbstractTableModel(parent)
 {
 }
 
-int AnalyzerModel::rowCount(const QModelIndex &parent) const
+int analyzer::Model::rowCount(const QModelIndex &parent) const
 {
     if(parent.isValid()){
         return 0;
@@ -13,7 +13,7 @@ int AnalyzerModel::rowCount(const QModelIndex &parent) const
     return viewsContainer_.size();
 }
 
-int AnalyzerModel::columnCount(const QModelIndex &parent) const
+int analyzer::Model::columnCount(const QModelIndex &parent) const
 {
     if(parent.isValid()){
         return 0;
@@ -21,7 +21,7 @@ int AnalyzerModel::columnCount(const QModelIndex &parent) const
     return columns_;
 }
 
-QVariant AnalyzerModel::data(const QModelIndex &index, int role) const
+QVariant analyzer::Model::data(const QModelIndex &index, int role) const
 {
     if(!index.isValid()){
         return QVariant{};
@@ -49,7 +49,7 @@ QVariant AnalyzerModel::data(const QModelIndex &index, int role) const
     return QVariant{};
 }
 
-QVariant AnalyzerModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant analyzer::Model::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if(orientation==Qt::Horizontal && role==Qt::DisplayRole){
         switch (section){
@@ -71,14 +71,14 @@ QVariant AnalyzerModel::headerData(int section, Qt::Orientation orientation, int
     return QVariant {};
 }
 
-void AnalyzerModel::setViewsContainer(const ViewsContainer &viewsContainer)
+void analyzer::Model::setViewsContainer(const ViewsContainer &viewsContainer)
 {
     beginResetModel();
     viewsContainer_.assign(viewsContainer.begin(),viewsContainer.end());
     endResetModel();
 }
 
-ViewsItem AnalyzerModel::getViewsItem(int row) const
+analyzer::ViewsItem analyzer::Model::getViewsItem(int row) const
 {
     if(row >= viewsContainer_.size()){
         return ViewsItem();
