@@ -1,5 +1,5 @@
-#ifndef ANALYZERMODEL_H
-#define ANALYZERMODEL_H
+#ifndef MODEL_H
+#define MODEL_H
 
 #include <QAbstractTableModel>
 #include <QJsonObject>
@@ -29,5 +29,4 @@ public:
 };
 }
 
-
-#endif // ANALYZERMODEL_H
+#endif // MODEL_H

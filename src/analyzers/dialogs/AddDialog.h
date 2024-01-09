@@ -1,5 +1,5 @@
-#ifndef ANALYZERNEWDIALOG_H
-#define ANALYZERNEWDIALOG_H
+#ifndef NEWDIALOG_H
+#define NEWDIALOG_H
 
 #include <QDialog>
 
@@ -8,21 +8,20 @@ class QComboBox;
 
 namespace analyzer
 {
-    class Storage;
-    class AddDialog : public QDialog
-    {
-        Q_OBJECT
-    private:
-        Storage& analyzerStorage_;
-        QComboBox* typesComboBoxPtr_ {nullptr};
-        QLineEdit* nameLineEditPtr_  {nullptr};
-    public:
-        explicit AddDialog(Storage& analyzerStorage,QWidget* parent=nullptr);
-        virtual ~AddDialog()=default;
-    signals:
-        void addSignal(const QString& analyzerType,const QString& analyzerName);
-    };
+class Storage;
+class AddDialog : public QDialog
+{
+    Q_OBJECT
+private:
+    Storage& analyzerStorage_;
+    QComboBox* typesComboBoxPtr_ {nullptr};
+    QLineEdit* nameLineEditPtr_  {nullptr};
+public:
+    explicit AddDialog(Storage& analyzerStorage,QWidget* parent=nullptr);
+    virtual ~AddDialog()=default;
+signals:
+    void addSignal(const QString& analyzerType,const QString& analyzerName);
+};
 }
 
-
-#endif // ANALYZERNEWDIALOG_H
+#endif // NEWDIALOG_H

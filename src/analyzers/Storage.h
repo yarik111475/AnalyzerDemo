@@ -1,5 +1,5 @@
-#ifndef ANALYZERSTORAGE_H
-#define ANALYZERSTORAGE_H
+#ifndef STORAGE_H
+#define STORAGE_H
 
 #include <QString>
 #include <QCoreApplication>
@@ -56,5 +56,4 @@ public:
 };
 }
 
-
-#endif // ANALYZERSTORAGE_H
+#endif // STORAGE_H
